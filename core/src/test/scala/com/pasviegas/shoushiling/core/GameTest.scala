@@ -28,30 +28,47 @@ import org.scalatest.{FlatSpec, MustMatchers}
 
 class GameTest extends FlatSpec with MustMatchers {
 
+  import com.pasviegas.shoushiling.core.GameRules._
   import com.pasviegas.shoushiling.test._
 
   "In the default Game, Rock:" must "win over Scissors" in {
-    DefaultGame.rules.find(_.winner == Rock).get.looser must be(Scissors)
+    DefaultGame.rules.find(_.winner == Rock).get.loser must be(Scissors)
   }
 
   "In the default Game, Scissors:" must "win over Paper" in {
-    DefaultGame.rules.find(_.winner == Scissors).get.looser must be(Paper)
+    DefaultGame.rules.find(_.winner == Scissors).get.loser must be(Paper)
   }
 
   "In the default Game, Paper:" must "win over Rock" in {
-    DefaultGame.rules.find(_.winner == Paper).get.looser must be(Rock)
+    DefaultGame.rules.find(_.winner == Paper).get.loser must be(Rock)
   }
 
   "Any game " should "be played by two players" in {
-    Game().play(Player("1") -> Player("2")).players must beTwoPlayers
+    Game().play(Player("1", Throw(Rock)) -> Player("2", Throw(Rock))).players must beTwoPlayers
   }
 
-  "Any game " can "have a winner" in {
-    Game().play(Player("1") -> Player("2")).winner.get must be(Player("1"))
+  "Only a game with a rule set " can "have a winner" in {
+    val rockWinsOverScissors: Game = Game(Set(
+      GameRule(Rock -> "crushes" -> Scissors)
+    ))
+
+    rockWinsOverScissors.play(Player("1", Throw(Rock)) -> Player("2", Throw(Scissors))).winner must
+      beThe(Player("1", Throw(Rock)))
   }
 
   "Any game " can "be a tie" in {
-    Game().play(Player("1") -> Player("1")) must beATie
+    Game().play(Player("1", Throw(Rock)) -> Player("1", Throw(Rock))) must beATie
+  }
+
+  "In a particular Game a player that throws Paper" must "win against a player that throws Scissors" in {
+    val paperAlwaysWins: Game = Game(Set(
+      GameRule(Paper -> "envelopes" -> Scissors),
+      GameRule(Paper -> "covers" -> Rock),
+      GameRule(Rock -> "crushes" -> Scissors)
+    ))
+
+    paperAlwaysWins.play(Player("1", Throw(Scissors)) -> Player("2", Throw(Paper))).winner must
+      beThe(Player("2", Throw(Paper)))
   }
 
 }

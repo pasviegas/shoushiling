@@ -28,7 +28,7 @@ import com.pasviegas.shoushiling.core.Moves.Move
 
 object GameRules {
 
-  case class GameRule(winner: Move, action: String, looser: Move)
+  case class GameRule(winner: Move, action: String, loser: Move)
 
   object GameRule {
     def apply(rule: ((Move, String), Move)): GameRule = GameRule(rule._1._1, rule._1._2, rule._2)

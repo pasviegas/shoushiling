@@ -24,4 +24,4 @@
 // For more information, please refer to <http://unlicense.org/>
 package com.pasviegas.shoushiling.core
 
-case class Player(name: String)
+case class Player(name: String, throws: Throw)

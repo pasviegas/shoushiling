@@ -22,36 +22,8 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 //
 // For more information, please refer to <http://unlicense.org/>
-package com.pasviegas.shoushiling
+package com.pasviegas.shoushiling.core
 
-import com.pasviegas.shoushiling.core._
-import org.scalatest.matchers.{MatchResult, Matcher}
+import com.pasviegas.shoushiling.core.Moves.Move
 
-package object test {
-
-  val beTwoPlayers = Matcher { (left: Any) =>
-    MatchResult(
-      left.isInstanceOf[(Player, Player)],
-      left + " was not two",
-      left + " was two"
-    )
-  }
-
-  val beATie = Matcher { (left: GameOutcome) =>
-    MatchResult(
-      left.isInstanceOf[Tie],
-      left + " was a tie",
-      left + " was not a tie"
-    )
-  }
-
-  def beThe(player: Player): Matcher[Option[Player]] =
-    Matcher { (left: Option[Player]) =>
-      MatchResult(
-        left.contains(player),
-        left + " was " + player,
-        left + " was not " + player
-      )
-    }
-
-}
+case class Throw(move: Move)
