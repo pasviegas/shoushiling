@@ -28,6 +28,8 @@ import org.scalatest.{FlatSpec, MustMatchers}
 
 class GameTest extends FlatSpec with MustMatchers {
 
+  import com.pasviegas.shoushiling.test._
+
   "In the default Game, Rock:" must "win over Scissors" in {
     DefaultGame.rules.find(_.winner == Rock).get.looser must be(Scissors)
   }
@@ -38,6 +40,10 @@ class GameTest extends FlatSpec with MustMatchers {
 
   "In the default Game, Paper:" must "win over Rock" in {
     DefaultGame.rules.find(_.winner == Paper).get.looser must be(Rock)
+  }
+
+  "Any game " should "be played by two players" in {
+    Game().play(Player() -> Player()).players must beTwoPlayers
   }
 
 }

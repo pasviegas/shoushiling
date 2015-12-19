@@ -22,10 +22,19 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 //
 // For more information, please refer to <http://unlicense.org/>
-package com.pasviegas.shoushiling.core
+package com.pasviegas.shoushiling
 
-import com.pasviegas.shoushiling.core.GameRules.GameRule
+import com.pasviegas.shoushiling.core.Player
+import org.scalatest.matchers.{MatchResult, Matcher}
 
-case class Game(rules: Set[GameRule] = Set()) {
-  def play(players: (Player, Player)): GameOutcome = GameOutcome(players)
+package object test {
+
+  val beTwoPlayers = Matcher { (left: Any) =>
+    MatchResult(
+      left.isInstanceOf[(Player, Player)],
+      left + " was not two",
+      left + " was two"
+    )
+  }
+
 }
