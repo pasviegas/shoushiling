@@ -2,20 +2,23 @@ import scalariform.formatter.preferences._
 
 lazy val shoushiling = (project in file("."))
   .settings(moduleName := "shoushiling")
-  .settings(buildSettings)
-  .settings(coverageSettings)
+  .settings(parentSettings)
   .aggregate(core, cli)
 
 lazy val core = (project in file("core"))
   .settings(moduleName := "shoushiling-core")
-  .settings(allSettings)
+  .settings(subProjectSettings)
 
 lazy val cli = (project in file("cli"))
   .settings(moduleName := "shoushiling-cli")
-  .settings(allSettings)
+  .settings(subProjectSettings)
   .dependsOn(core)
 
-lazy val allSettings = buildSettings ++ baseSettings ++ codeQualitySettings ++ scalariformSettings ++ coverageSettings
+lazy val parentSettings =
+  buildSettings ++ coverageSettings
+
+lazy val subProjectSettings =
+  buildSettings ++ baseSettings ++ codeQualitySettings ++ scalariformSettings ++ coverageSettings
 
 lazy val buildSettings = Seq(
   version := "1.0",
@@ -34,13 +37,13 @@ lazy val coverageSettings = Seq(
 )
 
 lazy val codeQualitySettings = Seq(
-  compileScalastyle := org.scalastyle.sbt.ScalastylePlugin.scalastyle.in(Compile).toTask("").value,
-  (compile in Compile) <<= (compile in Compile) dependsOn compileScalastyle,
+  compileScalaStyle := org.scalastyle.sbt.ScalastylePlugin.scalastyle.in(Compile).toTask("").value,
+  (compile in Compile) <<= (compile in Compile) dependsOn compileScalaStyle,
   ScalariformKeys.preferences := ScalariformKeys.preferences.value
     .setPreference(AlignSingleLineCaseStatements, true)
     .setPreference(AlignSingleLineCaseStatements.MaxArrowIndent, 100)
     .setPreference(DoubleIndentClassDeclaration, true)
 )
 
-lazy val compileScalastyle = taskKey[Unit]("compileScalastyle")
+lazy val compileScalaStyle = taskKey[Unit]("compileScalaStyle")
 

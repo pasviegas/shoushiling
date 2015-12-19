@@ -22,16 +22,18 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 //
 // For more information, please refer to <http://unlicense.org/>
-package com.pasviegas.shoushiling.core
+package com.pasviegas.shoushiling.core.engine
 
-object Moves {
+import com.pasviegas.shoushiling.core.GamePlay.{Match, Player}
 
-  sealed trait Move
+sealed trait GameOutcome {
+  def `match`: Match
 
-  case class Rock() extends Move
-
-  case class Scissors() extends Move
-
-  case class Paper() extends Move
-
+  def winner: Option[Player]
 }
+
+case class Tie(`match`: Match) extends GameOutcome {
+  def winner: Option[Player] = None
+}
+
+case class Win(`match`: Match, winner: Some[Player]) extends GameOutcome

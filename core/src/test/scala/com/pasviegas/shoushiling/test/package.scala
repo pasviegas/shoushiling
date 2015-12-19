@@ -24,7 +24,8 @@
 // For more information, please refer to <http://unlicense.org/>
 package com.pasviegas.shoushiling
 
-import com.pasviegas.shoushiling.core._
+import com.pasviegas.shoushiling.core.GamePlay.{Match, Player}
+import com.pasviegas.shoushiling.core.engine.{GameOutcome, Tie}
 import org.scalatest.matchers.{MatchResult, Matcher}
 
 package object test {

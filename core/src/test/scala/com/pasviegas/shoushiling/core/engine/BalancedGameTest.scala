@@ -22,13 +22,14 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 //
 // For more information, please refer to <http://unlicense.org/>
-package com.pasviegas.shoushiling.core
+package com.pasviegas.shoushiling.core.engine
 
+import com.pasviegas.shoushiling.core.GamePlay.{Match, Player, Throw}
 import org.scalatest.{FlatSpec, MustMatchers}
 
 class BalancedGameTest extends FlatSpec with MustMatchers {
 
-  import com.pasviegas.shoushiling.core.GameRules._
+  import com.pasviegas.shoushiling.core._
   import com.pasviegas.shoushiling.test._
 
   "Any game " should "be played in a match" in {
@@ -36,7 +37,7 @@ class BalancedGameTest extends FlatSpec with MustMatchers {
   }
 
   "Only a game with a rule set " can "have a winner" in {
-    val rockWinsOverScissors: BalancedGame = BalancedGame(Set(
+    val rockWinsOverScissors = BalancedGame(Set(
       GameRule(Rock -> "crushes" -> Scissors)
     ))
 
@@ -49,7 +50,7 @@ class BalancedGameTest extends FlatSpec with MustMatchers {
   }
 
   "In a particular Game a player that throws Paper" must "win against a player that throws Scissors" in {
-    val customGame: BalancedGame = BalancedGame(Set(
+    val customGame = BalancedGame(Set(
       GameRule(Paper -> "envelopes" -> Scissors),
       GameRule(Scissors -> "beats" -> Rock),
       GameRule(Rock -> "smashes" -> Paper)

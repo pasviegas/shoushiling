@@ -24,14 +24,27 @@
 // For more information, please refer to <http://unlicense.org/>
 package com.pasviegas.shoushiling.core
 
-sealed trait GameOutcome {
-  def `match`: Match
+object GamePlay {
 
-  def winner: Option[Player]
+  sealed trait Move
+
+  case class Rock() extends Move
+
+  case class Scissors() extends Move
+
+  case class Paper() extends Move
+
+  case class Throw(move: Move)
+
+  case class Player(name: String, throws: Throw)
+
+  case class Match(home: Player, adversary: Player)
+
+  object Match {
+    type HomePlayer = Player
+    type AdversaryPlayer = Player
+
+    def apply(players: (HomePlayer, AdversaryPlayer)): Match = Match(players._1, players._2)
+  }
+
 }
-
-case class Tie(`match`: Match) extends GameOutcome {
-  def winner: Option[Player] = None
-}
-
-case class Win(`match`: Match, winner: Some[Player]) extends GameOutcome

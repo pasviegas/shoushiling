@@ -22,10 +22,9 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 //
 // For more information, please refer to <http://unlicense.org/>
-package com.pasviegas.shoushiling.core
+package com.pasviegas.shoushiling.core.engine
 
-import com.pasviegas.shoushiling.core.GameRules.GameRule
-import com.pasviegas.shoushiling.core.Moves.Move
+import com.pasviegas.shoushiling.core.GamePlay.{Match, Move}
 
 class BalancedGame(val rules: Set[GameRule]) extends Game {
 
@@ -80,3 +79,5 @@ object BalancedGame {
     (moveCountTuple: ((Move, Int))) =>
       moveCountTuple._2 == (rules.size / setOfMoves.size)
 }
+
+case class GameNotBalancedException() extends Exception

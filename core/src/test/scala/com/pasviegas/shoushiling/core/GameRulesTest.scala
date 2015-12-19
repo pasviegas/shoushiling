@@ -24,11 +24,12 @@
 // For more information, please refer to <http://unlicense.org/>
 package com.pasviegas.shoushiling.core
 
+import com.pasviegas.shoushiling.core.engine.GameRule
 import org.scalatest.{FlatSpec, MustMatchers}
 
 class GameRulesTest extends FlatSpec with MustMatchers {
 
-  import com.pasviegas.shoushiling.core.GameRules._
+  import com.pasviegas.shoushiling.core._
 
   "Game Rule: Rock crushes Scissors" must "have Rock as winner and Scissors as loser" in {
     GameRule(Rock -> "crushes" -> Scissors) match {

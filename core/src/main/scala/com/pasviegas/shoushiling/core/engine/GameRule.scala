@@ -22,6 +22,12 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 //
 // For more information, please refer to <http://unlicense.org/>
-package com.pasviegas.shoushiling.core
+package com.pasviegas.shoushiling.core.engine
 
-case class Player(name: String, throws: Throw)
+import com.pasviegas.shoushiling.core.GamePlay.Move
+
+case class GameRule(winner: Move, action: String, loser: Move)
+
+object GameRule {
+  def apply(rule: ((Move, String), Move)): GameRule = GameRule(rule._1._1, rule._1._2, rule._2)
+}

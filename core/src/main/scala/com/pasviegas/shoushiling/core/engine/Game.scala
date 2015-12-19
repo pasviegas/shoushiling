@@ -22,6 +22,8 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 //
 // For more information, please refer to <http://unlicense.org/>
-package com.pasviegas.shoushiling.core
+package com.pasviegas.shoushiling.core.engine
 
-case class GameNotBalancedException() extends Exception
+trait Game {
+  def rules: Set[GameRule]
+}

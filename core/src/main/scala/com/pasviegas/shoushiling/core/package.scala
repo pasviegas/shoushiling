@@ -24,13 +24,13 @@
 // For more information, please refer to <http://unlicense.org/>
 package com.pasviegas.shoushiling
 
-import com.pasviegas.shoushiling.core.GameRules.GameRule
+import com.pasviegas.shoushiling.core.engine.{GameRule, BalancedGame}
 
 package object core {
 
-  val Rock = Moves.Rock()
-  val Paper = Moves.Paper()
-  val Scissors = Moves.Scissors()
+  val Rock = GamePlay.Rock()
+  val Paper = GamePlay.Paper()
+  val Scissors = GamePlay.Scissors()
 
   val DefaultGame = BalancedGame(Set(
     GameRule(Rock -> "crushes" -> Scissors),
