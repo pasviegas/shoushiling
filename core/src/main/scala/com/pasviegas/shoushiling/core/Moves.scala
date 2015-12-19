@@ -24,35 +24,14 @@
 // For more information, please refer to <http://unlicense.org/>
 package com.pasviegas.shoushiling.core
 
-import org.scalatest.{FlatSpec, MustMatchers}
+object Moves {
 
-class GameRulesTest extends FlatSpec with MustMatchers {
+  sealed trait Move
 
-  import com.pasviegas.shoushiling.core.GameRules._
+  case class Rock() extends Move
 
-  "Game Rule: Rock crushes Scissors" must "have Rock as winner and Scissors as loser" in {
-    GameRule(Rock -> "crushes" -> Scissors) match {
-      case GameRule(winner, _, loser) =>
-        winner must be(Rock)
-        loser must be(Scissors)
-    }
-  }
+  case class Scissors() extends Move
 
-  "Game Rule: Scissors cuts Paper" must "have Scissors as winner and Paper as loser" in {
-    GameRule(Scissors -> "cuts" -> Paper) match {
-      case GameRule(winner, _, loser) =>
-        winner must be(Scissors)
-        loser must be(Paper)
-    }
-  }
-
-  "Game Rule: Paper covers Scissors" must "have Paper as winner and Scissors as loser" in {
-    GameRule(Paper -> "cuts" -> Scissors) match {
-      case GameRule(winner, _, loser) =>
-        winner must be(Paper)
-        loser must be(Scissors)
-    }
-  }
+  case class Paper() extends Move
 
 }
-

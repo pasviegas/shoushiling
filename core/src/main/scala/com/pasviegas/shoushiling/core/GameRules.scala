@@ -24,6 +24,8 @@
 // For more information, please refer to <http://unlicense.org/>
 package com.pasviegas.shoushiling.core
 
+import com.pasviegas.shoushiling.core.Moves.Move
+
 object GameRules {
 
   case class GameRule(winner: Move, action: String, looser: Move)
@@ -31,12 +33,6 @@ object GameRules {
   object GameRule {
     def apply(rule: ((Move, String), Move)): GameRule = GameRule(rule._1._1, rule._1._2, rule._2)
   }
-
-  sealed trait Move
-
-  case class Rock() extends Move
-
-  case class Scissor() extends Move
 
 }
 
