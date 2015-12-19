@@ -24,8 +24,4 @@
 // For more information, please refer to <http://unlicense.org/>
 package com.pasviegas.shoushiling.core
 
-import com.pasviegas.shoushiling.core.GameRules.GameRule
-
-trait Game {
-  def rules: Set[GameRule]
-}
+case class GameNotBalancedException() extends Exception
