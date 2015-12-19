@@ -46,5 +46,9 @@ class GameTest extends FlatSpec with MustMatchers {
     Game().play(Player() -> Player()).players must beTwoPlayers
   }
 
+  "Any game " can "have a winner" in {
+    Game().play(Player() -> Player()).winner must be(Player())
+  }
+
 }
 

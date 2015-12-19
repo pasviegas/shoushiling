@@ -24,4 +24,4 @@
 // For more information, please refer to <http://unlicense.org/>
 package com.pasviegas.shoushiling.core
 
-case class GameOutcome(players: (Player, Player))
+case class GameOutcome(players: (Player, Player), winner: Player)

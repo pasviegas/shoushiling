@@ -27,5 +27,5 @@ package com.pasviegas.shoushiling.core
 import com.pasviegas.shoushiling.core.GameRules.GameRule
 
 case class Game(rules: Set[GameRule] = Set()) {
-  def play(players: (Player, Player)): GameOutcome = GameOutcome(players)
+  def play(players: (Player, Player)): GameOutcome = GameOutcome(players, players._1)
 }
