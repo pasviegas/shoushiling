@@ -1,4 +1,4 @@
-## Shoushiling - (Rock, Paper, Scissors)
+## Shoushiling - (Rock, Paper, Scissors) [![Coverage Status](https://coveralls.io/repos/pasviegas/shoushiling/badge.svg?branch=master&service=github)](https://coveralls.io/github/pasviegas/shoushiling?branch=master)
 
 The first known mention of the game was in the 
 book Wuzazu (zh) (simplified Chinese: 五杂俎; traditional Chinese: 五雜組) by the Chinese 
