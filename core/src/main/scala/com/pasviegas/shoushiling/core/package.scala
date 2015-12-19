@@ -32,7 +32,7 @@ package object core {
   val Paper = Moves.Paper()
   val Scissors = Moves.Scissors()
 
-  val DefaultGame = Game(Set(
+  val DefaultGame = BalancedGame(Set(
     GameRule(Rock -> "crushes" -> Scissors),
     GameRule(Scissors -> "cuts" -> Paper),
     GameRule(Paper -> "covers" -> Rock)

@@ -39,7 +39,7 @@ package object test {
 
   val beATie = Matcher { (left: GameOutcome) =>
     MatchResult(
-      left.isInstanceOf[Tie],
+      left.winner.isEmpty && left.isInstanceOf[Tie],
       left + " was a tie",
       left + " was not a tie"
     )

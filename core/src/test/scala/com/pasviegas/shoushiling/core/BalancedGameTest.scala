@@ -26,17 +26,17 @@ package com.pasviegas.shoushiling.core
 
 import org.scalatest.{FlatSpec, MustMatchers}
 
-class GameTest extends FlatSpec with MustMatchers {
+class BalancedGameTest extends FlatSpec with MustMatchers {
 
   import com.pasviegas.shoushiling.core.GameRules._
   import com.pasviegas.shoushiling.test._
 
   "Any game " should "be played in a match" in {
-    Game().play(Match(Player("1", Throw(Rock)) -> Player("2", Throw(Rock)))).`match` must beAMatch
+    BalancedGame().play(Match(Player("1", Throw(Rock)) -> Player("2", Throw(Rock)))).`match` must beAMatch
   }
 
   "Only a game with a rule set " can "have a winner" in {
-    val rockWinsOverScissors: Game = Game(Set(
+    val rockWinsOverScissors: BalancedGame = BalancedGame(Set(
       GameRule(Rock -> "crushes" -> Scissors)
     ))
 
@@ -45,18 +45,40 @@ class GameTest extends FlatSpec with MustMatchers {
   }
 
   "Any game " can "be a tie" in {
-    Game().play(Match(Player("1", Throw(Rock)) -> Player("1", Throw(Rock)))) must beATie
+    BalancedGame().play(Match(Player("1", Throw(Rock)) -> Player("1", Throw(Rock)))) must beATie
   }
 
   "In a particular Game a player that throws Paper" must "win against a player that throws Scissors" in {
-    val paperAlwaysWins: Game = Game(Set(
+    val customGame: BalancedGame = BalancedGame(Set(
       GameRule(Paper -> "envelopes" -> Scissors),
-      GameRule(Paper -> "covers" -> Rock),
-      GameRule(Rock -> "crushes" -> Scissors)
+      GameRule(Scissors -> "beats" -> Rock),
+      GameRule(Rock -> "smashes" -> Paper)
     ))
 
-    paperAlwaysWins.play(Match(Player("1", Throw(Scissors)) -> Player("2", Throw(Paper)))).winner must
+    customGame.play(Match(Player("1", Throw(Scissors)) -> Player("2", Throw(Paper)))).winner must
       beThe(Player("2", Throw(Paper)))
+  }
+
+  "A game with unbalanced losers" should "throw GameNotBalancedException" in {
+    a[GameNotBalancedException] should be thrownBy {
+      BalancedGame(Set(
+        GameRule(Paper -> "envelopes" -> Scissors),
+        GameRule(Paper -> "covers" -> Rock),
+        GameRule(Rock -> "crushes" -> Scissors),
+        GameRule(Rock -> "smashes" -> Paper)
+      ))
+    }
+  }
+
+  "A game with unbalanced winners" should "throw GameNotBalancedException" in {
+    a[GameNotBalancedException] should be thrownBy {
+      BalancedGame(Set(
+        GameRule(Paper -> "envelopes" -> Scissors),
+        GameRule(Paper -> "covers" -> Scissors),
+        GameRule(Scissors -> "crushes" -> Rock),
+        GameRule(Rock -> "smashes" -> Rock)
+      ))
+    }
   }
 
   "In the default Game, Rock:" must "win over Scissors" in {

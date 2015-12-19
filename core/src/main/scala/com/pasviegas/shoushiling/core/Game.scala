@@ -25,8 +25,13 @@
 package com.pasviegas.shoushiling.core
 
 import com.pasviegas.shoushiling.core.GameRules.GameRule
+import com.pasviegas.shoushiling.core.Moves.Move
 
-case class Game(rules: Set[GameRule] = Set()) {
+trait Game {
+  def rules: Set[GameRule]
+}
+
+class BalancedGame(val rules: Set[GameRule]) extends Game {
 
   import scala.PartialFunction._
 
@@ -51,3 +56,33 @@ case class Game(rules: Set[GameRule] = Set()) {
     condOpt(`match`.home.throws.move == `match`.adversary.throws.move) { case true => Tie(`match`) }
 
 }
+
+object BalancedGame {
+
+  def apply(rules: Set[GameRule] = Set()): BalancedGame = rules match {
+    case ruleSet if isNotBalanced(rules, _.loser) => throw GameNotBalancedException()
+    case ruleSet if isNotBalanced(rules, _.winner) => throw GameNotBalancedException()
+    case checkedRules => new BalancedGame(checkedRules)
+  }
+
+  private def isNotBalanced(rules: Set[GameRule], moveFrom: (GameRule) => Move) =
+    !isBalanced(rules, moveFrom)
+
+  private def isBalanced(rules: Set[GameRule], moveFrom: (GameRule) => Move) =
+    rules
+      .foldLeft(Map[Move, Int]())(countMoves(moveFrom))
+      .forall(moveCountShouldBeBalancedWith(rules, uniqueMoves(rules, moveFrom)))
+
+  private def uniqueMoves(rules: Set[GameRule], moveFrom: (GameRule) => Move) =
+    rules.foldLeft(Set[Move]())((moves, rule) => moves + moveFrom(rule))
+
+  private def countMoves(moveFrom: (GameRule) => Move) =
+    (moveCountMap: Map[Move, Int], rule: GameRule) =>
+      moveCountMap + (moveFrom(rule) -> (moveCountMap.getOrElse(moveFrom(rule), 0) + 1))
+
+  private def moveCountShouldBeBalancedWith(rules: Set[GameRule], setOfMoves: Set[Move]) =
+    (moveCountTuple: ((Move, Int))) =>
+      moveCountTuple._2 == (rules.size / setOfMoves.size)
+}
+
+case class GameNotBalancedException() extends Exception
