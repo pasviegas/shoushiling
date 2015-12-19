@@ -31,18 +31,6 @@ class GameTest extends FlatSpec with MustMatchers {
   import com.pasviegas.shoushiling.core.GameRules._
   import com.pasviegas.shoushiling.test._
 
-  "In the default Game, Rock:" must "win over Scissors" in {
-    DefaultGame.rules.find(_.winner == Rock).get.loser must be(Scissors)
-  }
-
-  "In the default Game, Scissors:" must "win over Paper" in {
-    DefaultGame.rules.find(_.winner == Scissors).get.loser must be(Paper)
-  }
-
-  "In the default Game, Paper:" must "win over Rock" in {
-    DefaultGame.rules.find(_.winner == Paper).get.loser must be(Rock)
-  }
-
   "Any game " should "be played in a match" in {
     Game().play(Match(Player("1", Throw(Rock)) -> Player("2", Throw(Rock)))).`match` must beAMatch
   }
@@ -69,6 +57,21 @@ class GameTest extends FlatSpec with MustMatchers {
 
     paperAlwaysWins.play(Match(Player("1", Throw(Scissors)) -> Player("2", Throw(Paper)))).winner must
       beThe(Player("2", Throw(Paper)))
+  }
+
+  "In the default Game, Rock:" must "win over Scissors" in {
+    DefaultGame.play(Match(Player("1", Throw(Rock)) -> Player("2", Throw(Scissors)))).winner must
+      beThe(Player("1", Throw(Rock)))
+  }
+
+  "In the default Game, Scissors:" must "win over Paper" in {
+    DefaultGame.play(Match(Player("1", Throw(Scissors)) -> Player("2", Throw(Paper)))).winner must
+      beThe(Player("1", Throw(Scissors)))
+  }
+
+  "In the default Game, Paper:" must "win over Rock" in {
+    DefaultGame.play(Match(Player("1", Throw(Paper)) -> Player("2", Throw(Rock)))).winner must
+      beThe(Player("1", Throw(Paper)))
   }
 
 }
