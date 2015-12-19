@@ -28,18 +28,26 @@ import com.pasviegas.shoushiling.core.GameRules.GameRule
 
 case class Game(rules: Set[GameRule] = Set()) {
 
-  def play(players: (Player, Player)): GameOutcome =
-    findWinner(players)
-      .orElse(findWinner(players.swap))
-      .getOrElse(Tie(players))
+  import scala.PartialFunction._
 
-  def findWinner(players: (Player, Player)): Option[Win] = {
-    rules.find(winningRule(players))
-      .map(rule => Win(players, Some(players._1)))
-  }
+  def play(`match`: Match): GameOutcome =
+    findIfHomeIsWinner(`match`)
+      .orElse(findIfTie(`match`))
+      .getOrElse(adversaryWon(`match`))
 
-  private def winningRule(players: (Player, Player)) =
+  private def adversaryWon(`match`: Match) =
+    Win(`match`, Some(`match`.adversary))
+
+  private def findIfHomeIsWinner(`match`: Match) =
+    rules.find(winningRule(`match`))
+      .map(rule => Win(`match`, Some(`match`.home)))
+
+  private def winningRule(`match`: Match) =
     (rule: GameRule) =>
-      (rule.winner == players._1.throws.move) &&
-        (rule.loser == players._2.throws.move)
+      (rule.winner == `match`.home.throws.move) &&
+        (rule.loser == `match`.adversary.throws.move)
+
+  private def findIfTie(`match`: Match) =
+    condOpt(`match`.home.throws.move == `match`.adversary.throws.move) { case true => Tie(`match`) }
+
 }

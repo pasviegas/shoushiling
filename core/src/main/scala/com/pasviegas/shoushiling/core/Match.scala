@@ -22,36 +22,13 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 //
 // For more information, please refer to <http://unlicense.org/>
-package com.pasviegas.shoushiling
+package com.pasviegas.shoushiling.core
 
-import com.pasviegas.shoushiling.core._
-import org.scalatest.matchers.{MatchResult, Matcher}
+case class Match(home: Player, adversary: Player)
 
-package object test {
+object Match {
+  type HomePlayer = Player
+  type AdversaryPlayer = Player
 
-  val beAMatch = Matcher { (left: Match) =>
-    MatchResult(
-      matches = true,
-      left + " was not two",
-      left + " was two"
-    )
-  }
-
-  val beATie = Matcher { (left: GameOutcome) =>
-    MatchResult(
-      left.isInstanceOf[Tie],
-      left + " was a tie",
-      left + " was not a tie"
-    )
-  }
-
-  def beThe(player: Player): Matcher[Option[Player]] =
-    Matcher { (left: Option[Player]) =>
-      MatchResult(
-        left.contains(player),
-        left + " was " + player,
-        left + " was not " + player
-      )
-    }
-
+  def apply(players: (HomePlayer, AdversaryPlayer)): Match = Match(players._1, players._2)
 }

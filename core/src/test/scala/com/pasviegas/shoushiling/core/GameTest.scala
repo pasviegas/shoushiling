@@ -43,8 +43,8 @@ class GameTest extends FlatSpec with MustMatchers {
     DefaultGame.rules.find(_.winner == Paper).get.loser must be(Rock)
   }
 
-  "Any game " should "be played by two players" in {
-    Game().play(Player("1", Throw(Rock)) -> Player("2", Throw(Rock))).players must beTwoPlayers
+  "Any game " should "be played in a match" in {
+    Game().play(Match(Player("1", Throw(Rock)) -> Player("2", Throw(Rock)))).`match` must beAMatch
   }
 
   "Only a game with a rule set " can "have a winner" in {
@@ -52,12 +52,12 @@ class GameTest extends FlatSpec with MustMatchers {
       GameRule(Rock -> "crushes" -> Scissors)
     ))
 
-    rockWinsOverScissors.play(Player("1", Throw(Rock)) -> Player("2", Throw(Scissors))).winner must
+    rockWinsOverScissors.play(Match(Player("1", Throw(Rock)) -> Player("2", Throw(Scissors)))).winner must
       beThe(Player("1", Throw(Rock)))
   }
 
   "Any game " can "be a tie" in {
-    Game().play(Player("1", Throw(Rock)) -> Player("1", Throw(Rock))) must beATie
+    Game().play(Match(Player("1", Throw(Rock)) -> Player("1", Throw(Rock)))) must beATie
   }
 
   "In a particular Game a player that throws Paper" must "win against a player that throws Scissors" in {
@@ -67,7 +67,7 @@ class GameTest extends FlatSpec with MustMatchers {
       GameRule(Rock -> "crushes" -> Scissors)
     ))
 
-    paperAlwaysWins.play(Player("1", Throw(Scissors)) -> Player("2", Throw(Paper))).winner must
+    paperAlwaysWins.play(Match(Player("1", Throw(Scissors)) -> Player("2", Throw(Paper)))).winner must
       beThe(Player("2", Throw(Paper)))
   }
 

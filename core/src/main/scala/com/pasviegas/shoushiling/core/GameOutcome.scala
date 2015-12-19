@@ -25,13 +25,13 @@
 package com.pasviegas.shoushiling.core
 
 sealed trait GameOutcome {
-  def players: (Player, Player)
+  def `match`: Match
 
   def winner: Option[Player]
 }
 
-case class Tie(players: (Player, Player)) extends GameOutcome {
+case class Tie(`match`: Match) extends GameOutcome {
   def winner: Option[Player] = None
 }
 
-case class Win(players: (Player, Player), winner: Some[Player]) extends GameOutcome
+case class Win(`match`: Match, winner: Some[Player]) extends GameOutcome
