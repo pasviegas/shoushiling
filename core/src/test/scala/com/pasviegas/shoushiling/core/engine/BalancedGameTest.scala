@@ -24,7 +24,7 @@
 // For more information, please refer to <http://unlicense.org/>
 package com.pasviegas.shoushiling.core.engine
 
-import com.pasviegas.shoushiling.core.GamePlay.{Match, Player, Throw}
+import com.pasviegas.shoushiling.core.GamePlay.{Match, Move, Player, Throw}
 import org.scalatest.{FlatSpec, MustMatchers}
 
 class BalancedGameTest extends FlatSpec with MustMatchers {
@@ -80,6 +80,27 @@ class BalancedGameTest extends FlatSpec with MustMatchers {
         GameRule(Rock -> "smashes" -> Rock)
       ))
     }
+  }
+
+  "In a particular Game " should "be easily extensible to play new moves" in {
+    val Lizard = Move('Lizard)
+    val Spock = Move('Spock)
+
+    val customGame = BalancedGame(Set(
+      GameRule(Scissors -> "cuts" -> Paper),
+      GameRule(Scissors -> "decapitates" -> Lizard),
+      GameRule(Paper -> "covers" -> Rock),
+      GameRule(Paper -> "disproves" -> Spock),
+      GameRule(Rock -> "crushes" -> Scissors),
+      GameRule(Rock -> "crushes" -> Lizard),
+      GameRule(Lizard -> "poisons" -> Spock),
+      GameRule(Lizard -> "eats" -> Paper),
+      GameRule(Spock -> "smashes" -> Scissors),
+      GameRule(Spock -> "vaporizes" -> Rock)
+    ))
+
+    customGame.play(Match(Player("1", Throw(Lizard)) -> Player("2", Throw(Spock)))).winner must
+      beThe(Player("1", Throw(Lizard)))
   }
 
   "In the default Game, Rock:" must "win over Scissors" in {

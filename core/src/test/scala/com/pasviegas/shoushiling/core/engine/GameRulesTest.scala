@@ -22,9 +22,8 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 //
 // For more information, please refer to <http://unlicense.org/>
-package com.pasviegas.shoushiling.core
+package com.pasviegas.shoushiling.core.engine
 
-import com.pasviegas.shoushiling.core.engine.GameRule
 import org.scalatest.{FlatSpec, MustMatchers}
 
 class GameRulesTest extends FlatSpec with MustMatchers {

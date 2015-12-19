@@ -32,8 +32,8 @@ sealed trait GameOutcome {
   def winner: Option[Player]
 }
 
-case class Tie(`match`: Match) extends GameOutcome {
+final case class Tie(`match`: Match) extends GameOutcome {
   def winner: Option[Player] = None
 }
 
-case class Win(`match`: Match, winner: Some[Player]) extends GameOutcome
+final case class Win(`match`: Match, winner: Some[Player]) extends GameOutcome

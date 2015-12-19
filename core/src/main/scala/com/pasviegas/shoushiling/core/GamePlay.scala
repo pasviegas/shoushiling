@@ -26,13 +26,7 @@ package com.pasviegas.shoushiling.core
 
 object GamePlay {
 
-  sealed trait Move
-
-  case class Rock() extends Move
-
-  case class Scissors() extends Move
-
-  case class Paper() extends Move
+  case class Move(name: Symbol)
 
   case class Throw(move: Move)
 
