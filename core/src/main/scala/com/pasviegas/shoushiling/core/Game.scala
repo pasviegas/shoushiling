@@ -27,5 +27,8 @@ package com.pasviegas.shoushiling.core
 import com.pasviegas.shoushiling.core.GameRules.GameRule
 
 case class Game(rules: Set[GameRule] = Set()) {
-  def play(players: (Player, Player)): GameOutcome = GameOutcome(players, players._1)
+  def play(players: (Player, Player)): GameOutcome = players match {
+    case (player1, player2) if player1 == player2 => Tie(players)
+    case (player1, player2) if player1 != player2 => Win(players, Some(player1))
+  }
 }

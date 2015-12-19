@@ -24,7 +24,7 @@
 // For more information, please refer to <http://unlicense.org/>
 package com.pasviegas.shoushiling
 
-import com.pasviegas.shoushiling.core.Player
+import com.pasviegas.shoushiling.core.{GameOutcome, Player, Tie}
 import org.scalatest.matchers.{MatchResult, Matcher}
 
 package object test {
@@ -34,6 +34,14 @@ package object test {
       left.isInstanceOf[(Player, Player)],
       left + " was not two",
       left + " was two"
+    )
+  }
+
+  val beATie = Matcher { (left: GameOutcome) =>
+    MatchResult(
+      left.isInstanceOf[Tie],
+      left + " was a tie",
+      left + " was not a tie"
     )
   }
 

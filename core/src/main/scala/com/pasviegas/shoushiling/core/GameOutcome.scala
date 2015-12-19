@@ -24,4 +24,14 @@
 // For more information, please refer to <http://unlicense.org/>
 package com.pasviegas.shoushiling.core
 
-case class GameOutcome(players: (Player, Player), winner: Player)
+sealed trait GameOutcome {
+  def players: (Player, Player)
+
+  def winner: Option[Player]
+}
+
+case class Tie(players: (Player, Player)) extends GameOutcome {
+  def winner: Option[Player] = None
+}
+
+case class Win(players: (Player, Player), winner: Some[Player]) extends GameOutcome
