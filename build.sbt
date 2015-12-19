@@ -3,8 +3,8 @@ import scalariform.formatter.preferences._
 lazy val shoushiling = (project in file("."))
   .settings(moduleName := "shoushiling")
   .settings(buildSettings)
+  .settings(coverageSettings)
   .aggregate(core, cli)
-  .dependsOn(core, cli)
 
 lazy val core = (project in file("core"))
   .settings(moduleName := "shoushiling-core")
@@ -15,7 +15,7 @@ lazy val cli = (project in file("cli"))
   .settings(allSettings)
   .dependsOn(core)
 
-lazy val allSettings = buildSettings ++ baseSettings ++ codeQualitySettings ++ scalariformSettings
+lazy val allSettings = buildSettings ++ baseSettings ++ codeQualitySettings ++ scalariformSettings ++ coverageSettings
 
 lazy val buildSettings = Seq(
   version := "1.0",
@@ -29,8 +29,11 @@ lazy val baseSettings = Seq(
   )
 )
 
+lazy val coverageSettings = Seq(
+  coverageEnabled := true
+)
+
 lazy val codeQualitySettings = Seq(
-  coverageEnabled := true,
   compileScalastyle := org.scalastyle.sbt.ScalastylePlugin.scalastyle.in(Compile).toTask("").value,
   (compile in Compile) <<= (compile in Compile) dependsOn compileScalastyle,
   ScalariformKeys.preferences := ScalariformKeys.preferences.value
