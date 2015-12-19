@@ -15,9 +15,18 @@
 // limitations under the License.
 package com.pasviegas.shoushiling
 
+import com.pasviegas.shoushiling.core.GameRules.GameRule
+
 package object core {
 
   val Rock = Moves.Rock()
   val Paper = Moves.Paper()
   val Scissors = Moves.Scissors()
+
+  val DefaultGame = Game(Set(
+    GameRule(Rock -> "crushes" -> Scissors),
+    GameRule(Scissors -> "cuts" -> Paper),
+    GameRule(Paper -> "covers" -> Rock)
+  ))
+
 }
