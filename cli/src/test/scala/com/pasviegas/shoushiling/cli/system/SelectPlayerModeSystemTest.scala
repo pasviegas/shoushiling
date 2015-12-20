@@ -24,9 +24,9 @@
 // For more information, please refer to <http://unlicense.org/>
 package com.pasviegas.shoushiling.cli.system
 
-import com.pasviegas.shoushiling.cli.Inputs._
-import com.pasviegas.shoushiling.cli.Messages._
-import com.pasviegas.shoushiling.cli.Stages._
+import com.pasviegas.shoushiling.cli.system.inputs.{MultiPlayerMode, SinglePlayerMode}
+import com.pasviegas.shoushiling.cli.system.messages.{MultiPlayerSelectedMessage, SinglePlayerSelectedMessage}
+import com.pasviegas.shoushiling.cli.system.stages.HomePlayerChooseMoveToThrow
 import com.pasviegas.shoushiling.cli.{GameState, MultiPlayer, SinglePlayer}
 import org.scalatest.{FlatSpec, MustMatchers}
 

@@ -24,19 +24,20 @@
 // For more information, please refer to <http://unlicense.org/>
 package com.pasviegas.shoushiling.cli.system
 
-import com.pasviegas.shoushiling.core.GamePlay.Throw
-import com.pasviegas.shoushiling.core.engine.Game
+package object stages {
 
-import scala.util.Random
+  trait Stage
 
-case class ComputerPlayer(seed: Random) {
+  case class GameStarted() extends Stage
 
-  def throws(game: Game): Throw =
-    Throw(rules(game)(randomMoveIndex(game)).winner)
+  case class ChooseGameMode() extends Stage
 
-  private def rules(game: Game) =
-    game.rules.toArray
+  case class HomePlayerChooseMoveToThrow() extends Stage
 
-  private def randomMoveIndex(game: Game) =
-    Random.nextInt(game.rules.size)
+  case class AdversaryPlayerChooseMoveToThrow() extends Stage
+
+  case class PlayTheGame() extends Stage
+
+  case class GameOver() extends Stage
+
 }

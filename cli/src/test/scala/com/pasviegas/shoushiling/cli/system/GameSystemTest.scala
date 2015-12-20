@@ -24,7 +24,7 @@
 // For more information, please refer to <http://unlicense.org/>
 package com.pasviegas.shoushiling.cli.system
 
-import com.pasviegas.shoushiling.cli.Inputs._
+import com.pasviegas.shoushiling.cli.system.inputs._
 import com.pasviegas.shoushiling.core.GamePlay.{Move, Player, Throw}
 import org.scalatest.{FlatSpec, MustMatchers}
 

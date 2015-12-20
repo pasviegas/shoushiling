@@ -24,8 +24,8 @@
 // For more information, please refer to <http://unlicense.org/>
 package com.pasviegas.shoushiling.cli
 
-import com.pasviegas.shoushiling.cli.Messages.Message
-import com.pasviegas.shoushiling.cli.Stages.{GameStarted, Stage}
+import com.pasviegas.shoushiling.cli.system.messages.Message
+import com.pasviegas.shoushiling.cli.system.stages.{GameStarted, Stage}
 import com.pasviegas.shoushiling.core.GamePlay.{Match, Player, Throw}
 import com.pasviegas.shoushiling.core.engine.{Game, GameOutcome}
 

@@ -22,26 +22,21 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 //
 // For more information, please refer to <http://unlicense.org/>
-package com.pasviegas.shoushiling.cli
+package com.pasviegas.shoushiling.cli.system.support
 
 import com.pasviegas.shoushiling.core.GamePlay.Throw
+import com.pasviegas.shoushiling.core.engine.Game
 
-object Inputs {
+import scala.util.Random
 
-  sealed trait GameInput {
-    def state: GameState
-  }
+case class ComputerPlayer(seed: Random) {
 
-  case class StartGame(state: GameState) extends GameInput
+  def throws(game: Game): Throw =
+    Throw(rules(game)(randomMoveIndex(game)).winner)
 
-  case class SinglePlayerMode(state: GameState) extends GameInput
+  private def rules(game: Game) =
+    game.rules.toArray
 
-  case class MultiPlayerMode(state: GameState) extends GameInput
-
-  case class SelectHomeMoveToThrow(state: GameState, thrown: Throw) extends GameInput
-
-  case class SelectAdversaryMoveToThrow(state: GameState, thrown: Throw) extends GameInput
-
-  case class Play(state: GameState) extends GameInput
-
+  private def randomMoveIndex(game: Game) =
+    Random.nextInt(game.rules.size)
 }

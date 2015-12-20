@@ -25,10 +25,10 @@
 package com.pasviegas.shoushiling.cli.system
 
 import com.pasviegas.shoushiling.cli.GameState
-import com.pasviegas.shoushiling.cli.Inputs.{GameInput, Play}
-import com.pasviegas.shoushiling.cli.Messages.GameOverMessage
-import com.pasviegas.shoushiling.cli.Stages.GameOver
-import com.pasviegas.shoushiling.cli.system.Exceptions.{GameHasNoMatch, GameHasNotBeenConfigured}
+import com.pasviegas.shoushiling.cli.system.exceptions.{GameHasNoMatch, GameHasNotBeenConfigured}
+import com.pasviegas.shoushiling.cli.system.inputs.{GameInput, Play}
+import com.pasviegas.shoushiling.cli.system.messages.GameOverMessage
+import com.pasviegas.shoushiling.cli.system.stages.GameOver
 import com.pasviegas.shoushiling.core.GamePlay.Match
 import com.pasviegas.shoushiling.core.engine.Game
 

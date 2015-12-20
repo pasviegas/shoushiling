@@ -25,9 +25,9 @@
 package com.pasviegas.shoushiling.cli.system
 
 import com.pasviegas.shoushiling.cli.GameState
-import com.pasviegas.shoushiling.cli.Inputs.{GameInput, StartGame}
-import com.pasviegas.shoushiling.cli.Messages.WelcomeMessage
-import com.pasviegas.shoushiling.cli.Stages.ChooseGameMode
+import com.pasviegas.shoushiling.cli.system.inputs.{GameInput, StartGame}
+import com.pasviegas.shoushiling.cli.system.messages.WelcomeMessage
+import com.pasviegas.shoushiling.cli.system.stages.ChooseGameMode
 import com.pasviegas.shoushiling.core._
 
 import scala.util.{Success, Try}

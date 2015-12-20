@@ -25,7 +25,7 @@
 package com.pasviegas.shoushiling.cli.system
 
 import com.pasviegas.shoushiling.cli.GameState
-import com.pasviegas.shoushiling.cli.Inputs.GameInput
+import com.pasviegas.shoushiling.cli.system.inputs.GameInput
 
 import scala.util.Try
 
@@ -38,3 +38,4 @@ trait AGameSystem extends PartialFunction[GameInput, Try[GameState]] {
   def isDefinedAt(input: GameInput): Boolean = this.request.isDefinedAt(input)
 
 }
+

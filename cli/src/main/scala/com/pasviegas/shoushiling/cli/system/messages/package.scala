@@ -24,12 +24,20 @@
 // For more information, please refer to <http://unlicense.org/>
 package com.pasviegas.shoushiling.cli.system
 
-object Exceptions {
+package object messages {
 
-  case object GameHasNoMatch extends Exception
+  trait Message
 
-  case object GameHasNotBeenConfigured extends Exception
+  case object WelcomeMessage extends Message
 
-  case object NoGameModeSelected extends Exception
+  case object SinglePlayerSelectedMessage extends Message
+
+  case object MultiPlayerSelectedMessage extends Message
+
+  case object HomePlayerMoveSelectedMessage extends Message
+
+  case object AdversaryPlayerMoveSelectedMessage extends Message
+
+  case object GameOverMessage extends Message
 
 }

@@ -24,10 +24,10 @@
 // For more information, please refer to <http://unlicense.org/>
 package com.pasviegas.shoushiling.cli.system
 
-import com.pasviegas.shoushiling.cli.Inputs._
-import com.pasviegas.shoushiling.cli.Messages._
-import com.pasviegas.shoushiling.cli.Stages._
-import com.pasviegas.shoushiling.cli.system.Exceptions.NoGameModeSelected
+import com.pasviegas.shoushiling.cli.system.exceptions.NoGameModeSelected
+import com.pasviegas.shoushiling.cli.system.inputs.{SelectAdversaryMoveToThrow, SelectHomeMoveToThrow}
+import com.pasviegas.shoushiling.cli.system.messages._
+import com.pasviegas.shoushiling.cli.system.stages.{AdversaryPlayerChooseMoveToThrow, PlayTheGame}
 import com.pasviegas.shoushiling.cli.{GameState, MultiPlayer, PreMatch, SinglePlayer}
 import com.pasviegas.shoushiling.core.GamePlay.{Move, Throw}
 import org.scalatest.{FlatSpec, MustMatchers}

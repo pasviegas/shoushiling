@@ -25,7 +25,7 @@
 package com.pasviegas.shoushiling.cli.system
 
 import com.pasviegas.shoushiling.cli.GameState
-import com.pasviegas.shoushiling.cli.Inputs._
+import com.pasviegas.shoushiling.cli.system.inputs.GameInput
 
 import scala.util.{Random, Try}
 

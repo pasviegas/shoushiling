@@ -25,9 +25,9 @@
 package com.pasviegas.shoushiling.cli.system
 
 import com.pasviegas.shoushiling.cli.GameState
-import com.pasviegas.shoushiling.cli.Inputs._
-import com.pasviegas.shoushiling.cli.Messages._
-import com.pasviegas.shoushiling.cli.Stages._
+import com.pasviegas.shoushiling.cli.system.inputs.StartGame
+import com.pasviegas.shoushiling.cli.system.messages.WelcomeMessage
+import com.pasviegas.shoushiling.cli.system.stages.ChooseGameMode
 import org.scalatest.{FlatSpec, MustMatchers}
 
 class StartGameSystemTest extends FlatSpec with MustMatchers {

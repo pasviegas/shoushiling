@@ -22,22 +22,27 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 //
 // For more information, please refer to <http://unlicense.org/>
-package com.pasviegas.shoushiling.cli
+package com.pasviegas.shoushiling.cli.system
 
-object Stages {
+import com.pasviegas.shoushiling.cli.GameState
+import com.pasviegas.shoushiling.core.GamePlay.Throw
 
-  trait Stage
+package object inputs {
 
-  case class GameStarted() extends Stage
+  sealed trait GameInput {
+    def state: GameState
+  }
 
-  case class ChooseGameMode() extends Stage
+  case class StartGame(state: GameState) extends GameInput
 
-  case class HomePlayerChooseMoveToThrow() extends Stage
+  case class SinglePlayerMode(state: GameState) extends GameInput
 
-  case class AdversaryPlayerChooseMoveToThrow() extends Stage
+  case class MultiPlayerMode(state: GameState) extends GameInput
 
-  case class PlayTheGame() extends Stage
+  case class SelectHomeMoveToThrow(state: GameState, thrown: Throw) extends GameInput
 
-  case class GameOver() extends Stage
+  case class SelectAdversaryMoveToThrow(state: GameState, thrown: Throw) extends GameInput
+
+  case class Play(state: GameState) extends GameInput
 
 }
