@@ -30,4 +30,6 @@ object Exceptions {
 
   case object GameHasNotBeenConfigured extends Exception
 
+  case object NoGameModeSelected extends Exception
+
 }

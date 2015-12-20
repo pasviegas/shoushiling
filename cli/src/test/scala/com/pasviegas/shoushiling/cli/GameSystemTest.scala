@@ -24,10 +24,10 @@
 // For more information, please refer to <http://unlicense.org/>
 package com.pasviegas.shoushiling.cli
 
-import com.pasviegas.shoushiling.cli.Exceptions.{GameHasNoMatch, GameHasNotBeenConfigured}
+import com.pasviegas.shoushiling.cli.Exceptions.{NoGameModeSelected, GameHasNoMatch, GameHasNotBeenConfigured}
 import com.pasviegas.shoushiling.cli.Inputs._
 import com.pasviegas.shoushiling.cli.Messages._
-import com.pasviegas.shoushiling.cli.Stages.{PlayTheGame, ChooseMoveToThrow, ChooseGameMode}
+import com.pasviegas.shoushiling.cli.Stages.{AdversaryPlayerChooseMoveToThrow, ChooseGameMode, HomePlayerChooseMoveToThrow, PlayTheGame}
 import com.pasviegas.shoushiling.core.GamePlay.{Match, Move, Player, Throw}
 import org.scalatest.{FlatSpec, MustMatchers}
 
@@ -62,7 +62,7 @@ class GameSystemTest extends FlatSpec with MustMatchers {
   }
 
   "After the player chooses single player " must " choose its move" in {
-    (GameSystem() request SinglePlayerMode(GameState())).get.nextStage must be(ChooseMoveToThrow())
+    (GameSystem() request SinglePlayerMode(GameState())).get.nextStage must be(HomePlayerChooseMoveToThrow())
   }
 
   "A player " must "be able to choose to play with another player" in {
@@ -74,7 +74,7 @@ class GameSystemTest extends FlatSpec with MustMatchers {
   }
 
   "After the player chooses multi player " must " choose its move" in {
-    (GameSystem() request MultiPlayerMode(GameState())).get.nextStage must be(ChooseMoveToThrow())
+    (GameSystem() request MultiPlayerMode(GameState())).get.nextStage must be(HomePlayerChooseMoveToThrow())
   }
 
   "The home player " must "be able to choose which move to throw" in {
@@ -83,7 +83,10 @@ class GameSystemTest extends FlatSpec with MustMatchers {
       Player("2", Throw(Move('Paper)))
     )
 
-    val game = GameState(`match` = Some(championshipFinale))
+    val game = GameState(
+      `match` = Some(championshipFinale),
+      mode = Some(SinglePlayer)
+    )
 
     (GameSystem() request SelectHomeMoveToThrow(game, Throw(Move('Rock)))).get.`match`
       .get.home.throws must be(Throw(Move('Rock)))
@@ -95,13 +98,16 @@ class GameSystemTest extends FlatSpec with MustMatchers {
       Player("2", Throw(Move('Paper)))
     )
 
-    val game = GameState(`match` = Some(championshipFinale))
+    val game = GameState(
+      `match` = Some(championshipFinale),
+      mode = Some(SinglePlayer)
+    )
 
     (GameSystem() request SelectHomeMoveToThrow(game, Throw(Move('Rock))))
       .get.message must be(Some(HomePlayerMoveSelectedMessage))
   }
 
-  "After the player chooses its throw, it " should " play the game" in {
+  "If there if no game mode set, the game" should "not be played" in {
     val championshipFinale = Match(
       Player("1", Throw(Move('Paper))),
       Player("2", Throw(Move('Paper)))
@@ -109,8 +115,37 @@ class GameSystemTest extends FlatSpec with MustMatchers {
 
     val game = GameState(`match` = Some(championshipFinale))
 
+    (GameSystem() request SelectHomeMoveToThrow(game, Throw(Move('Rock)))) must be(Failure(NoGameModeSelected))
+  }
+
+  "After the home player chooses its throw and game mode is single player, it " should " play the game" in {
+    val championshipFinale = Match(
+      Player("1", Throw(Move('Paper))),
+      Player("2", Throw(Move('Paper)))
+    )
+
+    val game = GameState(
+      `match` = Some(championshipFinale),
+      mode = Some(SinglePlayer)
+    )
+
     (GameSystem() request SelectHomeMoveToThrow(game, Throw(Move('Rock))))
       .get.nextStage must be(PlayTheGame())
+  }
+
+  "After the home player chooses its throw and game mode is multi player, it " should " wait for the next player" in {
+    val championshipFinale = Match(
+      Player("1", Throw(Move('Paper))),
+      Player("2", Throw(Move('Paper)))
+    )
+
+    val game = GameState(
+      `match` = Some(championshipFinale),
+      mode = Some(MultiPlayer)
+    )
+
+    (GameSystem() request SelectHomeMoveToThrow(game, Throw(Move('Rock))))
+      .get.nextStage must be(AdversaryPlayerChooseMoveToThrow())
   }
 
   "The adversary player " must "be able to choose which move to throw" in {

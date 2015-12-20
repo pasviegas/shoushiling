@@ -24,10 +24,10 @@
 // For more information, please refer to <http://unlicense.org/>
 package com.pasviegas.shoushiling.cli
 
-import com.pasviegas.shoushiling.cli.Exceptions.{GameHasNoMatch, GameHasNotBeenConfigured}
+import com.pasviegas.shoushiling.cli.Exceptions.{GameHasNoMatch, GameHasNotBeenConfigured, NoGameModeSelected}
 import com.pasviegas.shoushiling.cli.Inputs._
 import com.pasviegas.shoushiling.cli.Messages._
-import com.pasviegas.shoushiling.cli.Stages.{PlayTheGame, ChooseGameMode, ChooseMoveToThrow}
+import com.pasviegas.shoushiling.cli.Stages._
 import com.pasviegas.shoushiling.core.GamePlay.Throw
 
 import scala.util.{Failure, Success, Try}
@@ -57,22 +57,32 @@ case class GameSystem() {
     Success(state.copy(
       mode = Some(SinglePlayer),
       message = Some(SinglePlayerSelectedMessage),
-      nextStage = ChooseMoveToThrow()
+      nextStage = HomePlayerChooseMoveToThrow()
     ))
 
   private def selectMultiPlayer(state: GameState) =
     Success(state.copy(
       mode = Some(MultiPlayer),
       message = Some(MultiPlayerSelectedMessage),
-      nextStage = ChooseMoveToThrow()
+      nextStage = HomePlayerChooseMoveToThrow()
     ))
 
   private def selectHomeMoveToThrow(state: GameState, thrown: Throw) =
-    Success(state.copy(
-      `match` = state.`match`.map(players => players.copy(home = players.home.copy(throws = thrown))),
-      message = Some(HomePlayerMoveSelectedMessage),
-      nextStage = PlayTheGame()
-    ))
+    state.mode match {
+      case Some(SinglePlayer) =>
+        Success(state.copy(
+          `match` = state.`match`.map(players => players.copy(home = players.home.copy(throws = thrown))),
+          message = Some(HomePlayerMoveSelectedMessage),
+          nextStage = PlayTheGame()
+        ))
+      case Some(MultiPlayer) =>
+        Success(state.copy(
+          `match` = state.`match`.map(players => players.copy(home = players.home.copy(throws = thrown))),
+          message = Some(HomePlayerMoveSelectedMessage),
+          nextStage = AdversaryPlayerChooseMoveToThrow()
+        ))
+      case None => Failure(NoGameModeSelected)
+    }
 
   private def selectAdversaryMoveToThrow(state: GameState, thrown: Throw) =
     Success(state.copy(
