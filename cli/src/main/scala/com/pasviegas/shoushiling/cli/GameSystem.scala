@@ -34,7 +34,8 @@ case class GameSystem() {
     case StartGame(state) => startGame(state)
     case SinglePlayerMode(state) => selectSinglePlayer(state)
     case MultiPlayerMode(state) => selectMultiPlayer(state)
-    case SelectMoveToThrow(state, thrown) => selectMoveToThrow(state, thrown)
+    case SelectHomeMoveToThrow(state, thrown) => selectHomeMoveToThrow(state, thrown)
+    case SelectAdversaryMoveToThrow(state, thrown) => selectAdversaryMoveToThrow(state, thrown)
   }
 
   private def startGame(state: GameState) =
@@ -46,6 +47,11 @@ case class GameSystem() {
   private def selectMultiPlayer(state: GameState): GameState =
     state.copy(mode = Some(MultiPlayer), message = Some(MultiPlayerSelectedMessage))
 
-  private def selectMoveToThrow(state: GameState, thrown: Throw): GameState =
+  private def selectHomeMoveToThrow(state: GameState, thrown: Throw): GameState =
     state.copy(`match` = state.`match`.map(players => players.copy(home = players.home.copy(throws = thrown))))
+
+  private def selectAdversaryMoveToThrow(state: GameState, thrown: Throw): GameState =
+    state.copy(
+      `match` = state.`match`.map(players => players.copy(adversary = players.adversary.copy(throws = thrown)))
+    )
 }

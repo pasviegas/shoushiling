@@ -38,6 +38,7 @@ object Inputs {
 
   case class MultiPlayerMode(state: GameState) extends GameInput
 
-  case class SelectMoveToThrow(state: GameState, thrown: Throw) extends GameInput
+  case class SelectHomeMoveToThrow(state: GameState, thrown: Throw) extends GameInput
+  case class SelectAdversaryMoveToThrow(state: GameState, thrown: Throw) extends GameInput
 
 }
