@@ -22,50 +22,23 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 //
 // For more information, please refer to <http://unlicense.org/>
-package com.pasviegas.shoushiling.cli
+package com.pasviegas.shoushiling.cli.system
 
-import com.pasviegas.shoushiling.cli.Exceptions.{GameHasNoMatch, GameHasNotBeenConfigured, NoGameModeSelected}
-import com.pasviegas.shoushiling.cli.Inputs._
-import com.pasviegas.shoushiling.cli.Messages._
-import com.pasviegas.shoushiling.cli.Stages._
+import com.pasviegas.shoushiling.cli.Inputs.{GameInput, SelectAdversaryMoveToThrow, SelectHomeMoveToThrow}
+import com.pasviegas.shoushiling.cli.Messages.{AdversaryPlayerMoveSelectedMessage, HomePlayerMoveSelectedMessage}
+import com.pasviegas.shoushiling.cli.Stages.{AdversaryPlayerChooseMoveToThrow, PlayTheGame}
+import com.pasviegas.shoushiling.cli.system.Exceptions.NoGameModeSelected
+import com.pasviegas.shoushiling.cli.{GameState, MultiPlayer, SinglePlayer}
 import com.pasviegas.shoushiling.core.GamePlay.Throw
 
 import scala.util.{Failure, Success, Try}
 
-case class GameSystem() {
+case object SelectPlayerThrowSystem extends AGameSystem {
 
-  import com.pasviegas.shoushiling.core._
-
-  def request(input: GameInput): Try[GameState] = input match {
-    case StartGame(state) => startGame(state)
-    case SinglePlayerMode(state) => selectSinglePlayer(state)
-    case MultiPlayerMode(state) => selectMultiPlayer(state)
+  def request: PartialFunction[GameInput, Try[GameState]] = {
     case SelectHomeMoveToThrow(state, thrown) => selectHomeMoveToThrow(state, thrown)
     case SelectAdversaryMoveToThrow(state, thrown) => selectAdversaryMoveToThrow(state, thrown)
-    case Play(state) => play(state)
   }
-
-  private def startGame(state: GameState) =
-    Success(state.copy(
-      started = true,
-      message = Some(WelcomeMessage),
-      game = Some(DefaultGame),
-      nextStage = ChooseGameMode()
-    ))
-
-  private def selectSinglePlayer(state: GameState) =
-    Success(state.copy(
-      mode = Some(SinglePlayer),
-      message = Some(SinglePlayerSelectedMessage),
-      nextStage = HomePlayerChooseMoveToThrow()
-    ))
-
-  private def selectMultiPlayer(state: GameState) =
-    Success(state.copy(
-      mode = Some(MultiPlayer),
-      message = Some(MultiPlayerSelectedMessage),
-      nextStage = HomePlayerChooseMoveToThrow()
-    ))
 
   private def selectHomeMoveToThrow(state: GameState, thrown: Throw) =
     state.mode match {
@@ -90,17 +63,5 @@ case class GameSystem() {
       message = Some(AdversaryPlayerMoveSelectedMessage),
       nextStage = PlayTheGame()
     ))
-
-  private def play(state: GameState) =
-    (state.game, state.`match`) match {
-      case (Some(game), Some(players)) => Success(state.copy(
-        outcome = Some(game.play(players)),
-        message = Some(GameOverMessage),
-        nextStage = GameOver()
-      ))
-      case (Some(game), None) => Failure(GameHasNoMatch)
-      case (None, Some(players)) => Failure(GameHasNotBeenConfigured)
-      case (None, None) => Failure(GameHasNotBeenConfigured)
-    }
 
 }

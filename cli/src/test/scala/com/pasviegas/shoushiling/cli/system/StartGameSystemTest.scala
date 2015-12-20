@@ -22,14 +22,33 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 //
 // For more information, please refer to <http://unlicense.org/>
-package com.pasviegas.shoushiling.cli
+package com.pasviegas.shoushiling.cli.system
 
-object Exceptions {
+import com.pasviegas.shoushiling.cli.GameState
+import com.pasviegas.shoushiling.cli.Inputs._
+import com.pasviegas.shoushiling.cli.Messages._
+import com.pasviegas.shoushiling.cli.Stages._
+import org.scalatest.{FlatSpec, MustMatchers}
 
-  case object GameHasNoMatch extends Exception
+class StartGameSystemTest extends FlatSpec with MustMatchers {
 
-  case object GameHasNotBeenConfigured extends Exception
+  "A player" must "be able to start the game" in {
+    (StartGameSystem request StartGame(GameState())).get.started must be(true)
+  }
 
-  case object NoGameModeSelected extends Exception
+  "A player" must "be able to start the game with the default rules" in {
+    import com.pasviegas.shoushiling.core._
+
+    (StartGameSystem request StartGame(GameState())).get.game must be(Some(DefaultGame))
+  }
+
+  "When the game starts, the player" should "receive a welcome message" in {
+    (StartGameSystem request StartGame(GameState())).get.message must be(Some(WelcomeMessage))
+  }
+
+  "After the game starts, the player" must "choose the game mode" in {
+    (StartGameSystem request StartGame(GameState())).get.nextStage must be(ChooseGameMode())
+  }
 
 }
+
