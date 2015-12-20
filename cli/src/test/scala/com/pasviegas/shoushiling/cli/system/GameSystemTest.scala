@@ -24,7 +24,6 @@
 // For more information, please refer to <http://unlicense.org/>
 package com.pasviegas.shoushiling.cli.system
 
-import com.pasviegas.shoushiling.cli.GameState
 import com.pasviegas.shoushiling.cli.Inputs._
 import com.pasviegas.shoushiling.core.GamePlay.{Move, Player, Throw}
 import org.scalatest.{FlatSpec, MustMatchers}
@@ -32,6 +31,8 @@ import org.scalatest.{FlatSpec, MustMatchers}
 import scala.util.Try
 
 class GameSystemTest extends FlatSpec with MustMatchers {
+
+  import com.pasviegas.shoushiling.cli._
 
   "Game system" should "respond to StartGame input" in {
     (GameSystem.request isDefinedAt StartGame(GameState())) must be(true)
@@ -73,6 +74,19 @@ class GameSystemTest extends FlatSpec with MustMatchers {
     } yield gamePlayed
 
     finalGame.get.outcome.get.winner.get must be(Player("1", Throw(Rock)))
+  }
+
+  "A player" should "be able to play a full single player game" in {
+    import com.pasviegas.shoushiling.core._
+
+    val finalGame: Try[GameState] = for {
+      gameStarted <- GameSystem request StartGame(GameState())
+      modeChosen <- GameSystem request SinglePlayerMode(gameStarted)
+      throwsChosen <- GameSystem request SelectHomeMoveToThrow(modeChosen, Throw(Rock))
+      gamePlayed <- GameSystem request Play(throwsChosen)
+    } yield gamePlayed
+
+    finalGame.get.outcome mustBe defined
   }
 
 }

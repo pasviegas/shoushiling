@@ -24,17 +24,19 @@
 // For more information, please refer to <http://unlicense.org/>
 package com.pasviegas.shoushiling.cli.system
 
-import com.pasviegas.shoushiling.cli.GameState
-import com.pasviegas.shoushiling.cli.Inputs._
+import com.pasviegas.shoushiling.core.GamePlay.Throw
+import com.pasviegas.shoushiling.core.engine.Game
 
-import scala.util.{Random, Try}
+import scala.util.Random
 
-case class GameSystem(seed: Random) extends AGameSystem {
+case class ComputerPlayer(seed: Random) {
 
-  def request: PartialFunction[GameInput, Try[GameState]] =
-    StartGameSystem
-      .orElse(SelectPlayerModeSystem)
-      .orElse(SelectPlayerThrowSystem(seed))
-      .orElse(PlayGameSystem)
+  def throws(game: Game): Throw =
+    Throw(rules(game)(randomMoveIndex(game)).winner)
 
+  private def rules(game: Game) =
+    game.rules.toArray
+
+  private def randomMoveIndex(game: Game) =
+    Random.nextInt(game.rules.size)
 }

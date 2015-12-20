@@ -22,19 +22,11 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 //
 // For more information, please refer to <http://unlicense.org/>
-package com.pasviegas.shoushiling.cli.system
+package com.pasviegas.shoushiling
 
-import com.pasviegas.shoushiling.cli.GameState
-import com.pasviegas.shoushiling.cli.Inputs._
+import scala.util.Random
 
-import scala.util.{Random, Try}
+package object cli {
 
-case class GameSystem(seed: Random) extends AGameSystem {
-
-  def request: PartialFunction[GameInput, Try[GameState]] =
-    StartGameSystem
-      .orElse(SelectPlayerModeSystem)
-      .orElse(SelectPlayerThrowSystem(seed))
-      .orElse(PlayGameSystem)
-
+  val GameSystem = system.GameSystem(new Random)
 }

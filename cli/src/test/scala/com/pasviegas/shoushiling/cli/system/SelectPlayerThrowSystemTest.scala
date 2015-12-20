@@ -32,62 +32,68 @@ import com.pasviegas.shoushiling.cli.{GameState, MultiPlayer, PreMatch, SinglePl
 import com.pasviegas.shoushiling.core.GamePlay.{Move, Throw}
 import org.scalatest.{FlatSpec, MustMatchers}
 
-import scala.util.Failure
+import scala.util.{Failure, Random}
 
 class SelectPlayerThrowSystemTest extends FlatSpec with MustMatchers {
 
   "The home player" must "be able to choose which move to throw" in {
-    val game = GameState(mode = Some(SinglePlayer))
+    import com.pasviegas.shoushiling.core.DefaultGame
 
-    (SelectPlayerThrowSystem request SelectHomeMoveToThrow(game, Throw(Move('Rock))))
-      .get.preMatch.homeThrow.get must be(Throw(Move('Rock)))
+    val game = GameState(mode = Some(SinglePlayer), game = Some(DefaultGame))
+
+    (SelectPlayerThrowSystem(new Random) request SelectHomeMoveToThrow(game, Throw(Move('Rock))))
+      .get.`match`.get.home.throws must be(Throw(Move('Rock)))
   }
 
   "When the home player selects its throw, he" should "receive a feedback message" in {
-    val game = GameState(mode = Some(SinglePlayer))
+    import com.pasviegas.shoushiling.core.DefaultGame
 
-    (SelectPlayerThrowSystem request SelectHomeMoveToThrow(game, Throw(Move('Rock))))
+    val game = GameState(mode = Some(SinglePlayer), game = Some(DefaultGame))
+
+    (SelectPlayerThrowSystem(new Random) request SelectHomeMoveToThrow(game, Throw(Move('Rock))))
       .get.message must be(Some(HomePlayerMoveSelectedMessage))
   }
 
   "If there if no game mode set, the game" should "not be played" in {
     val moveToThrow: SelectHomeMoveToThrow = SelectHomeMoveToThrow(GameState(), Throw(Move('Rock)))
 
-    (SelectPlayerThrowSystem request moveToThrow) must be(Failure(NoGameModeSelected))
+    (SelectPlayerThrowSystem(new Random) request moveToThrow) must be(Failure(NoGameModeSelected))
   }
 
   "After the home player chooses its throw and game mode is single player, it" should "play the game" in {
-    val game = GameState(mode = Some(SinglePlayer))
+    import com.pasviegas.shoushiling.core.DefaultGame
 
-    (SelectPlayerThrowSystem request SelectHomeMoveToThrow(game, Throw(Move('Rock))))
+    val game = GameState(mode = Some(SinglePlayer), game = Some(DefaultGame))
+
+    (SelectPlayerThrowSystem(new Random) request SelectHomeMoveToThrow(game, Throw(Move('Rock))))
       .get.nextStage must be(PlayTheGame())
   }
 
   "After the home player chooses its throw and game mode is multi player, it" should "wait for the next player" in {
     val game = GameState(mode = Some(MultiPlayer))
 
-    (SelectPlayerThrowSystem request SelectHomeMoveToThrow(game, Throw(Move('Rock))))
+    (SelectPlayerThrowSystem(new Random) request SelectHomeMoveToThrow(game, Throw(Move('Rock))))
       .get.nextStage must be(AdversaryPlayerChooseMoveToThrow())
   }
 
   "The adversary player " must "be able to choose which move to throw" in {
     val game = GameState(preMatch = PreMatch(homeThrow = Some(Throw(Move('Paper)))))
 
-    (SelectPlayerThrowSystem request SelectAdversaryMoveToThrow(game, Throw(Move('Rock))))
+    (SelectPlayerThrowSystem(new Random) request SelectAdversaryMoveToThrow(game, Throw(Move('Rock))))
       .get.`match`.get.adversary.throws must be(Throw(Move('Rock)))
   }
 
   "When the adversary player selects its throw, he" should "receive a feedback message" in {
     val game = GameState(preMatch = PreMatch(homeThrow = Some(Throw(Move('Paper)))))
 
-    (SelectPlayerThrowSystem request SelectAdversaryMoveToThrow(game, Throw(Move('Rock))))
+    (SelectPlayerThrowSystem(new Random) request SelectAdversaryMoveToThrow(game, Throw(Move('Rock))))
       .get.message must be(Some(AdversaryPlayerMoveSelectedMessage))
   }
 
   "After the adversary player chooses its throw, players " should "play the game" in {
     val game = GameState(preMatch = PreMatch(homeThrow = Some(Throw(Move('Paper)))))
 
-    (SelectPlayerThrowSystem request SelectAdversaryMoveToThrow(game, Throw(Move('Rock))))
+    (SelectPlayerThrowSystem(new Random) request SelectAdversaryMoveToThrow(game, Throw(Move('Rock))))
       .get.nextStage must be(PlayTheGame())
   }
 

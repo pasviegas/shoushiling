@@ -31,9 +31,9 @@ import com.pasviegas.shoushiling.cli.system.Exceptions.NoGameModeSelected
 import com.pasviegas.shoushiling.cli.{GameState, MultiPlayer, SinglePlayer}
 import com.pasviegas.shoushiling.core.GamePlay.Throw
 
-import scala.util.{Failure, Success, Try}
+import scala.util.{Failure, Random, Success, Try}
 
-case object SelectPlayerThrowSystem extends AGameSystem {
+case class SelectPlayerThrowSystem(seed: Random) extends AGameSystem {
 
   def request: PartialFunction[GameInput, Try[GameState]] = {
     case SelectHomeMoveToThrow(state, thrown) => state.mode match {
@@ -46,7 +46,7 @@ case object SelectPlayerThrowSystem extends AGameSystem {
 
   private def selectSinglePlayerHome(state: GameState, thrown: Throw) =
     Success(state.copy(
-      preMatch = state.preMatch.copy(homeThrow = Some(thrown)),
+      `match` = state.preMatch.copy(homeThrow = Some(thrown), adversaryThrow = Some(randomThrow(state))).asMatch,
       message = Some(HomePlayerMoveSelectedMessage),
       nextStage = PlayTheGame()
     ))
@@ -65,4 +65,6 @@ case object SelectPlayerThrowSystem extends AGameSystem {
       nextStage = PlayTheGame()
     ))
 
+  private def randomThrow(state: GameState): Throw =
+    ComputerPlayer(seed).throws(state.game.get)
 }
