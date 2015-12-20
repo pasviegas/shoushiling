@@ -24,13 +24,8 @@
 // For more information, please refer to <http://unlicense.org/>
 package com.pasviegas.shoushiling.cli
 
-import org.scalatest.{FlatSpec, MustMatchers}
+object Inputs {
 
-class CliTest extends FlatSpec with MustMatchers {
-
-  "A sub-project " must "have test so coveralls can assemble the aggregated report" in {
-    Cli.coverallsOk() must be(true)
-  }
+  case class StartGame(state: GameState)
 
 }
-

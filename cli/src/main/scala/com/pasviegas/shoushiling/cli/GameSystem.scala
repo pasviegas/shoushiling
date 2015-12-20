@@ -24,8 +24,14 @@
 // For more information, please refer to <http://unlicense.org/>
 package com.pasviegas.shoushiling.cli
 
-object Cli {
+import com.pasviegas.shoushiling.cli.Inputs.StartGame
 
-  def coverallsOk(): Boolean = true
+case class GameSystem() {
+
+  def request(input: StartGame): GameState = input match {
+    case StartGame(state) => startGame(state)
+  }
+
+  private def startGame(state: GameState) = GameState(started = true)
 
 }
