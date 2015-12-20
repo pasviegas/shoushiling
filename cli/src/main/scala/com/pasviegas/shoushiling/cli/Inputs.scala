@@ -42,4 +42,6 @@ object Inputs {
 
   case class SelectAdversaryMoveToThrow(state: GameState, thrown: Throw) extends GameInput
 
+  case class Play(state: GameState) extends GameInput
+
 }

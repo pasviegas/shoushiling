@@ -25,7 +25,7 @@
 package com.pasviegas.shoushiling.cli
 
 import com.pasviegas.shoushiling.cli.Inputs._
-import com.pasviegas.shoushiling.cli.Messages.{MultiPlayerSelectedMessage, SinglePlayerSelectedMessage, WelcomeMessage}
+import com.pasviegas.shoushiling.cli.Messages._
 import com.pasviegas.shoushiling.core.GamePlay.{Match, Move, Player, Throw}
 import org.scalatest.{FlatSpec, MustMatchers}
 
@@ -33,6 +33,12 @@ class GameSystemTest extends FlatSpec with MustMatchers {
 
   "A player " must "be able to start the game" in {
     (GameSystem() request StartGame(GameState())).started must be(true)
+  }
+
+  "A player " must "be able to start the game with the default rules" in {
+    import com.pasviegas.shoushiling.core._
+
+    (GameSystem() request StartGame(GameState())).game must be(Some(DefaultGame))
   }
 
   "When the game starts, the player " should " receive a welcome message" in {
@@ -63,6 +69,14 @@ class GameSystemTest extends FlatSpec with MustMatchers {
       .get.home.throws must be(Throw(Move('Rock)))
   }
 
+  "When the home player selects its throw, he" should " receive a feedback message" in {
+    val championshipFinale = Match(Player("1", Throw(Move('Paper))), Player("2", Throw(Move('Paper))))
+    val game = GameState(`match` = Some(championshipFinale))
+
+    (GameSystem() request SelectHomeMoveToThrow(game, Throw(Move('Rock))))
+      .message must be(Some(HomePlayerMoveSelectedMessage))
+  }
+
   "The adversary player " must "be able to choose which move to throw" in {
     val championshipFinale = Match(Player("1", Throw(Move('Paper))), Player("2", Throw(Move('Paper))))
     val game = GameState(`match` = Some(championshipFinale))
@@ -71,10 +85,24 @@ class GameSystemTest extends FlatSpec with MustMatchers {
       .get.adversary.throws must be(Throw(Move('Rock)))
   }
 
-  "A player " must "be able to start the game with the default rules" in {
+  "When the adversary player selects its throw, he" should " receive a feedback message" in {
+    val championshipFinale = Match(Player("1", Throw(Move('Paper))), Player("2", Throw(Move('Paper))))
+    val game = GameState(`match` = Some(championshipFinale))
+
+    (GameSystem() request SelectAdversaryMoveToThrow(game, Throw(Move('Rock))))
+      .message must be(Some(AdversaryPlayerMoveSelectedMessage))
+  }
+
+  "Players" should " be able to play the game and see the outcome" in {
     import com.pasviegas.shoushiling.core._
 
-    (GameSystem() request StartGame(GameState())).game must be(Some(DefaultGame))
+    val championshipFinale = Match(Player("1", Throw(Move('Paper))), Player("2", Throw(Move('Paper))))
+    val game = GameState(
+      `match` = Some(championshipFinale),
+      game = Some(DefaultGame)
+    )
+
+    (GameSystem() request Play(game)).outcome mustBe defined
   }
 }
 

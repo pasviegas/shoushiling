@@ -24,6 +24,10 @@
 // For more information, please refer to <http://unlicense.org/>
 package com.pasviegas.shoushiling.core.engine
 
+import com.pasviegas.shoushiling.core.GamePlay.Match
+
 trait Game {
   def rules: Set[GameRule]
+
+  def play(`match`: Match): GameOutcome
 }

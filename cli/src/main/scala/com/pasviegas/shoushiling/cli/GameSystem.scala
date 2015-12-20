@@ -25,7 +25,7 @@
 package com.pasviegas.shoushiling.cli
 
 import com.pasviegas.shoushiling.cli.Inputs._
-import com.pasviegas.shoushiling.cli.Messages.{MultiPlayerSelectedMessage, SinglePlayerSelectedMessage, WelcomeMessage}
+import com.pasviegas.shoushiling.cli.Messages._
 import com.pasviegas.shoushiling.core.GamePlay.Throw
 
 case class GameSystem() {
@@ -38,6 +38,7 @@ case class GameSystem() {
     case MultiPlayerMode(state) => selectMultiPlayer(state)
     case SelectHomeMoveToThrow(state, thrown) => selectHomeMoveToThrow(state, thrown)
     case SelectAdversaryMoveToThrow(state, thrown) => selectAdversaryMoveToThrow(state, thrown)
+    case Play(state) => play(state)
   }
 
   private def startGame(state: GameState) =
@@ -48,16 +49,29 @@ case class GameSystem() {
     )
 
   private def selectSinglePlayer(state: GameState): GameState =
-    state.copy(mode = Some(SinglePlayer), message = Some(SinglePlayerSelectedMessage))
+    state.copy(
+      mode = Some(SinglePlayer),
+      message = Some(SinglePlayerSelectedMessage)
+    )
 
   private def selectMultiPlayer(state: GameState): GameState =
-    state.copy(mode = Some(MultiPlayer), message = Some(MultiPlayerSelectedMessage))
+    state.copy(
+      mode = Some(MultiPlayer),
+      message = Some(MultiPlayerSelectedMessage)
+    )
 
   private def selectHomeMoveToThrow(state: GameState, thrown: Throw): GameState =
-    state.copy(`match` = state.`match`.map(players => players.copy(home = players.home.copy(throws = thrown))))
+    state.copy(
+      `match` = state.`match`.map(players => players.copy(home = players.home.copy(throws = thrown))),
+      message = Some(HomePlayerMoveSelectedMessage)
+    )
 
   private def selectAdversaryMoveToThrow(state: GameState, thrown: Throw): GameState =
     state.copy(
-      `match` = state.`match`.map(players => players.copy(adversary = players.adversary.copy(throws = thrown)))
+      `match` = state.`match`.map(players => players.copy(adversary = players.adversary.copy(throws = thrown))),
+      message = Some(AdversaryPlayerMoveSelectedMessage)
     )
+
+  private def play(state: GameState) =
+    state.copy(outcome = Some(state.game.get.play(state.`match`.get)))
 }

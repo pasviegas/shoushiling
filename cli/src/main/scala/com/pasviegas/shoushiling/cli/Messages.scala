@@ -34,4 +34,7 @@ object Messages {
 
   case object MultiPlayerSelectedMessage extends Message
 
+  case object HomePlayerMoveSelectedMessage extends Message
+
+  case object AdversaryPlayerMoveSelectedMessage extends Message
 }
