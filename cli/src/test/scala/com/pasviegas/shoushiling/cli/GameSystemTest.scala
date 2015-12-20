@@ -165,5 +165,21 @@ class GameSystemTest extends FlatSpec with MustMatchers {
     (GameSystem() request Play(GameState())) must be(Failure(GameHasNotBeenConfigured))
   }
 
+  "After the the match is played, the players" should " receive a feedback message" in {
+    import com.pasviegas.shoushiling.core._
+
+    val championshipFinale = Match(
+      Player("1", Throw(Move('Paper))),
+      Player("2", Throw(Move('Paper)))
+    )
+
+    val defaultGame = GameState(
+      `match` = Some(championshipFinale),
+      game = Some(DefaultGame)
+    )
+
+    (GameSystem() request Play(defaultGame)).get.message must be(Some(EndGameMessage))
+  }
+
 }
 

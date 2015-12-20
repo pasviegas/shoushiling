@@ -81,7 +81,10 @@ case class GameSystem() {
 
   private def play(state: GameState) =
     (state.game, state.`match`) match {
-      case (Some(game), Some(players)) => Success(state.copy(outcome = Some(game.play(players))))
+      case (Some(game), Some(players)) => Success(state.copy(
+        outcome = Some(game.play(players)),
+        message = Some(EndGameMessage)
+      ))
       case (Some(game), None) => Failure(GameHasNoMatch)
       case (None, Some(players)) => Failure(GameHasNotBeenConfigured)
       case (None, None) => Failure(GameHasNotBeenConfigured)
