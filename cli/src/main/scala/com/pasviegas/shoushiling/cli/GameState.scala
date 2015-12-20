@@ -26,6 +26,7 @@ package com.pasviegas.shoushiling.cli
 
 import com.pasviegas.shoushiling.cli.Messages.Message
 import com.pasviegas.shoushiling.core.GamePlay.Match
+import com.pasviegas.shoushiling.core.engine.Game
 
 sealed trait GameMode
 
@@ -37,5 +38,6 @@ case class GameState(
   started: Boolean = false,
   mode: Option[GameMode] = None,
   `match`: Option[Match] = None,
-  message: Option[Message] = None
+  message: Option[Message] = None,
+  game: Option[Game] = None
 )

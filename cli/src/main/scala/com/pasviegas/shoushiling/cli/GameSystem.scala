@@ -30,6 +30,8 @@ import com.pasviegas.shoushiling.core.GamePlay.Throw
 
 case class GameSystem() {
 
+  import com.pasviegas.shoushiling.core._
+
   def request(input: GameInput): GameState = input match {
     case StartGame(state) => startGame(state)
     case SinglePlayerMode(state) => selectSinglePlayer(state)
@@ -39,7 +41,11 @@ case class GameSystem() {
   }
 
   private def startGame(state: GameState) =
-    state.copy(started = true, message = Some(WelcomeMessage))
+    state.copy(
+      started = true,
+      message = Some(WelcomeMessage),
+      game = Some(DefaultGame)
+    )
 
   private def selectSinglePlayer(state: GameState): GameState =
     state.copy(mode = Some(SinglePlayer), message = Some(SinglePlayerSelectedMessage))

@@ -70,5 +70,11 @@ class GameSystemTest extends FlatSpec with MustMatchers {
     (GameSystem() request SelectAdversaryMoveToThrow(game, Throw(Move('Rock)))).`match`
       .get.adversary.throws must be(Throw(Move('Rock)))
   }
+
+  "A player " must "be able to start the game with the default rules" in {
+    import com.pasviegas.shoushiling.core._
+
+    (GameSystem() request StartGame(GameState())).game must be(Some(DefaultGame))
+  }
 }
 
