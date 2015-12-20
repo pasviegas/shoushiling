@@ -27,7 +27,7 @@ package com.pasviegas.shoushiling.cli
 import com.pasviegas.shoushiling.cli.Exceptions.{GameHasNoMatch, GameHasNotBeenConfigured}
 import com.pasviegas.shoushiling.cli.Inputs._
 import com.pasviegas.shoushiling.cli.Messages._
-import com.pasviegas.shoushiling.cli.Stages.ChooseGameMode
+import com.pasviegas.shoushiling.cli.Stages.{ChooseMoveToThrow, ChooseGameMode}
 import com.pasviegas.shoushiling.core.GamePlay.{Match, Move, Player, Throw}
 import org.scalatest.{FlatSpec, MustMatchers}
 
@@ -61,12 +61,20 @@ class GameSystemTest extends FlatSpec with MustMatchers {
     (GameSystem() request SinglePlayerMode(GameState())).get.message must be(Some(SinglePlayerSelectedMessage))
   }
 
+  "After the player chooses single player " must " choose its move" in {
+    (GameSystem() request SinglePlayerMode(GameState())).get.nextStage must be(ChooseMoveToThrow())
+  }
+
   "A player " must "be able to choose to play with another player" in {
     (GameSystem() request MultiPlayerMode(GameState())).get.mode must be(Some(MultiPlayer))
   }
 
   "When the player selects multi player, he" should " receive a feedback message" in {
     (GameSystem() request MultiPlayerMode(GameState())).get.message must be(Some(MultiPlayerSelectedMessage))
+  }
+
+  "After the player chooses multi player " must " choose its move" in {
+    (GameSystem() request MultiPlayerMode(GameState())).get.nextStage must be(ChooseMoveToThrow())
   }
 
   "The home player " must "be able to choose which move to throw" in {
