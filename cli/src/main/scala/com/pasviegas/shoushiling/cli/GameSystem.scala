@@ -95,7 +95,8 @@ case class GameSystem() {
     (state.game, state.`match`) match {
       case (Some(game), Some(players)) => Success(state.copy(
         outcome = Some(game.play(players)),
-        message = Some(EndGameMessage)
+        message = Some(GameOverMessage),
+        nextStage = GameOver()
       ))
       case (Some(game), None) => Failure(GameHasNoMatch)
       case (None, Some(players)) => Failure(GameHasNotBeenConfigured)
