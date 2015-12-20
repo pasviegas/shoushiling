@@ -25,6 +25,7 @@
 package com.pasviegas.shoushiling.cli
 
 import com.pasviegas.shoushiling.cli.Messages.Message
+import com.pasviegas.shoushiling.core.GamePlay.Match
 
 sealed trait GameMode
 
@@ -35,5 +36,6 @@ case object MultiPlayer extends GameMode
 case class GameState(
   started: Boolean = false,
   mode: Option[GameMode] = None,
+  `match`: Option[Match] = None,
   message: Option[Message] = None
 )

@@ -24,6 +24,8 @@
 // For more information, please refer to <http://unlicense.org/>
 package com.pasviegas.shoushiling.cli
 
+import com.pasviegas.shoushiling.core.GamePlay.Throw
+
 object Inputs {
 
   sealed trait GameInput {
@@ -33,6 +35,9 @@ object Inputs {
   case class StartGame(state: GameState) extends GameInput
 
   case class SinglePlayerMode(state: GameState) extends GameInput
+
   case class MultiPlayerMode(state: GameState) extends GameInput
+
+  case class SelectMoveToThrow(state: GameState, thrown: Throw) extends GameInput
 
 }

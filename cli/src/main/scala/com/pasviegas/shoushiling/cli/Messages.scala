@@ -29,5 +29,7 @@ object Messages {
   trait Message
 
   case object WelcomeMessage extends Message
+  case object SinglePlayerSelectedMessage extends Message
+  case object MultiPlayerSelectedMessage extends Message
 
 }

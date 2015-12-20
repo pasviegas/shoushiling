@@ -24,8 +24,9 @@
 // For more information, please refer to <http://unlicense.org/>
 package com.pasviegas.shoushiling.cli
 
-import com.pasviegas.shoushiling.cli.Inputs.{MultiPlayerMode, SinglePlayerMode, StartGame}
-import com.pasviegas.shoushiling.cli.Messages.WelcomeMessage
+import com.pasviegas.shoushiling.cli.Inputs.{MultiPlayerMode, SelectMoveToThrow, SinglePlayerMode, StartGame}
+import com.pasviegas.shoushiling.cli.Messages.{MultiPlayerSelectedMessage, SinglePlayerSelectedMessage, WelcomeMessage}
+import com.pasviegas.shoushiling.core.GamePlay.{Match, Move, Player, Throw}
 import org.scalatest.{FlatSpec, MustMatchers}
 
 class GameSystemTest extends FlatSpec with MustMatchers {
@@ -42,9 +43,24 @@ class GameSystemTest extends FlatSpec with MustMatchers {
     (GameSystem() request SinglePlayerMode(GameState())).mode must be(Some(SinglePlayer))
   }
 
+  "When the player selects single player, he" should " receive a feedback message" in {
+    (GameSystem() request SinglePlayerMode(GameState())).message must be(Some(SinglePlayerSelectedMessage))
+  }
+
   "A player " must "be able to choose to play with another player" in {
     (GameSystem() request MultiPlayerMode(GameState())).mode must be(Some(MultiPlayer))
   }
 
+  "When the player selects multi player, he" should " receive a feedback message" in {
+    (GameSystem() request MultiPlayerMode(GameState())).message must be(Some(MultiPlayerSelectedMessage))
+  }
+
+  "A player " must "be able to choose which move to throw" in {
+    val championshipFinale = Match(Player("1", Throw(Move('Paper))), Player("2", Throw(Move('Paper))))
+    val game = GameState(`match` = Some(championshipFinale))
+
+    (GameSystem() request SelectMoveToThrow(game, Throw(Move('Rock)))).`match`
+      .get.home.throws must be(Throw(Move('Rock)))
+  }
 }
 

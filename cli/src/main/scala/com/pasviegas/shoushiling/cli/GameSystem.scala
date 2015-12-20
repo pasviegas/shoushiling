@@ -24,8 +24,9 @@
 // For more information, please refer to <http://unlicense.org/>
 package com.pasviegas.shoushiling.cli
 
-import com.pasviegas.shoushiling.cli.Inputs.{GameInput, MultiPlayerMode, SinglePlayerMode, StartGame}
-import com.pasviegas.shoushiling.cli.Messages.WelcomeMessage
+import com.pasviegas.shoushiling.cli.Inputs._
+import com.pasviegas.shoushiling.cli.Messages.{MultiPlayerSelectedMessage, SinglePlayerSelectedMessage, WelcomeMessage}
+import com.pasviegas.shoushiling.core.GamePlay.Throw
 
 case class GameSystem() {
 
@@ -33,14 +34,18 @@ case class GameSystem() {
     case StartGame(state) => startGame(state)
     case SinglePlayerMode(state) => selectSinglePlayer(state)
     case MultiPlayerMode(state) => selectMultiPlayer(state)
+    case SelectMoveToThrow(state, thrown) => selectMoveToThrow(state, thrown)
   }
 
   private def startGame(state: GameState) =
     state.copy(started = true, message = Some(WelcomeMessage))
 
   private def selectSinglePlayer(state: GameState): GameState =
-    state.copy(mode = Some(SinglePlayer))
+    state.copy(mode = Some(SinglePlayer), message = Some(SinglePlayerSelectedMessage))
 
   private def selectMultiPlayer(state: GameState): GameState =
-    state.copy(mode = Some(MultiPlayer))
+    state.copy(mode = Some(MultiPlayer), message = Some(MultiPlayerSelectedMessage))
+
+  private def selectMoveToThrow(state: GameState, thrown: Throw): GameState =
+    state.copy(`match` = state.`match`.map(players => players.copy(home = players.home.copy(throws = thrown))))
 }
