@@ -33,5 +33,6 @@ object Inputs {
   case class StartGame(state: GameState) extends GameInput
 
   case class SinglePlayerMode(state: GameState) extends GameInput
+  case class MultiPlayerMode(state: GameState) extends GameInput
 
 }

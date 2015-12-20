@@ -24,7 +24,7 @@
 // For more information, please refer to <http://unlicense.org/>
 package com.pasviegas.shoushiling.cli
 
-import com.pasviegas.shoushiling.cli.Inputs.{SinglePlayerMode, StartGame}
+import com.pasviegas.shoushiling.cli.Inputs.{MultiPlayerMode, SinglePlayerMode, StartGame}
 import org.scalatest.{FlatSpec, MustMatchers}
 
 class GameSystemTest extends FlatSpec with MustMatchers {
@@ -35,6 +35,10 @@ class GameSystemTest extends FlatSpec with MustMatchers {
 
   "A player " must "be able to choose to play alone" in {
     (GameSystem() request SinglePlayerMode(GameState())).mode must be(Some(SinglePlayer))
+  }
+
+  "A player " must "be able to choose to play with another player" in {
+    (GameSystem() request MultiPlayerMode(GameState())).mode must be(Some(MultiPlayer))
   }
 }
 

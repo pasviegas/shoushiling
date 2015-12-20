@@ -28,4 +28,6 @@ sealed trait GameMode
 
 case object SinglePlayer extends GameMode
 
+case object MultiPlayer extends GameMode
+
 case class GameState(started: Boolean = false, mode: Option[GameMode] = None)
