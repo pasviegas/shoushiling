@@ -29,24 +29,26 @@ import com.pasviegas.shoushiling.cli.Inputs.{GameInput, Play}
 import com.pasviegas.shoushiling.cli.Messages.GameOverMessage
 import com.pasviegas.shoushiling.cli.Stages.GameOver
 import com.pasviegas.shoushiling.cli.system.Exceptions.{GameHasNoMatch, GameHasNotBeenConfigured}
+import com.pasviegas.shoushiling.core.GamePlay.Match
+import com.pasviegas.shoushiling.core.engine.Game
 
 import scala.util.{Failure, Success, Try}
 
 case object PlayGameSystem extends AGameSystem {
 
   def request: PartialFunction[GameInput, Try[GameState]] = {
-    case Play(state) => play(state)
-  }
-
-  private def play(state: GameState) =
-    (state.game, state.`match`) match {
-      case (Some(game), Some(players)) => Success(state.copy(
-        outcome = Some(game.play(players)),
-        message = Some(GameOverMessage),
-        nextStage = GameOver()
-      ))
+    case Play(state) => (state.game, state.`match`) match {
+      case (Some(game), Some(players)) => play(state, game, players)
       case (Some(game), None) => Failure(GameHasNoMatch)
       case (None, Some(players)) => Failure(GameHasNotBeenConfigured)
       case (None, None) => Failure(GameHasNotBeenConfigured)
     }
+  }
+
+  private def play(state: GameState, game: Game, players: Match) =
+    Success(state.copy(
+      outcome = Some(game.play(players)),
+      message = Some(GameOverMessage),
+      nextStage = GameOver()
+    ))
 }

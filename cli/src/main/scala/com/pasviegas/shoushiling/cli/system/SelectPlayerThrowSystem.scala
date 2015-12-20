@@ -36,26 +36,27 @@ import scala.util.{Failure, Success, Try}
 case object SelectPlayerThrowSystem extends AGameSystem {
 
   def request: PartialFunction[GameInput, Try[GameState]] = {
-    case SelectHomeMoveToThrow(state, thrown) => selectHomeMoveToThrow(state, thrown)
+    case SelectHomeMoveToThrow(state, thrown) => state.mode match {
+      case Some(SinglePlayer) => selectSinglePlayerHome(state, thrown)
+      case Some(MultiPlayer) => selectMultiPlayerHome(state, thrown)
+      case None => Failure(NoGameModeSelected)
+    }
     case SelectAdversaryMoveToThrow(state, thrown) => selectAdversaryMoveToThrow(state, thrown)
   }
 
-  private def selectHomeMoveToThrow(state: GameState, thrown: Throw) =
-    state.mode match {
-      case Some(SinglePlayer) =>
-        Success(state.copy(
-          `match` = state.`match`.map(players => players.copy(home = players.home.copy(throws = thrown))),
-          message = Some(HomePlayerMoveSelectedMessage),
-          nextStage = PlayTheGame()
-        ))
-      case Some(MultiPlayer) =>
-        Success(state.copy(
-          `match` = state.`match`.map(players => players.copy(home = players.home.copy(throws = thrown))),
-          message = Some(HomePlayerMoveSelectedMessage),
-          nextStage = AdversaryPlayerChooseMoveToThrow()
-        ))
-      case None => Failure(NoGameModeSelected)
-    }
+  private def selectSinglePlayerHome(state: GameState, thrown: Throw) =
+    Success(state.copy(
+      `match` = state.`match`.map(players => players.copy(home = players.home.copy(throws = thrown))),
+      message = Some(HomePlayerMoveSelectedMessage),
+      nextStage = PlayTheGame()
+    ))
+
+  private def selectMultiPlayerHome(state: GameState, thrown: Throw) =
+    Success(state.copy(
+      `match` = state.`match`.map(players => players.copy(home = players.home.copy(throws = thrown))),
+      message = Some(HomePlayerMoveSelectedMessage),
+      nextStage = AdversaryPlayerChooseMoveToThrow()
+    ))
 
   private def selectAdversaryMoveToThrow(state: GameState, thrown: Throw) =
     Success(state.copy(
