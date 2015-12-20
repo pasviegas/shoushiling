@@ -27,7 +27,7 @@ package com.pasviegas.shoushiling.cli
 import com.pasviegas.shoushiling.cli.Exceptions.{GameHasNoMatch, GameHasNotBeenConfigured}
 import com.pasviegas.shoushiling.cli.Inputs._
 import com.pasviegas.shoushiling.cli.Messages._
-import com.pasviegas.shoushiling.cli.Stages.{ChooseMoveToThrow, ChooseGameMode}
+import com.pasviegas.shoushiling.cli.Stages.{PlayTheGame, ChooseMoveToThrow, ChooseGameMode}
 import com.pasviegas.shoushiling.core.GamePlay.{Match, Move, Player, Throw}
 import org.scalatest.{FlatSpec, MustMatchers}
 
@@ -99,6 +99,18 @@ class GameSystemTest extends FlatSpec with MustMatchers {
 
     (GameSystem() request SelectHomeMoveToThrow(game, Throw(Move('Rock))))
       .get.message must be(Some(HomePlayerMoveSelectedMessage))
+  }
+
+  "After the player chooses its throw, it " should " play the game" in {
+    val championshipFinale = Match(
+      Player("1", Throw(Move('Paper))),
+      Player("2", Throw(Move('Paper)))
+    )
+
+    val game = GameState(`match` = Some(championshipFinale))
+
+    (GameSystem() request SelectHomeMoveToThrow(game, Throw(Move('Rock))))
+      .get.nextStage must be(PlayTheGame())
   }
 
   "The adversary player " must "be able to choose which move to throw" in {

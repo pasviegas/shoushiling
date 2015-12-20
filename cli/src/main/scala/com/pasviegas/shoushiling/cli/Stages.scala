@@ -32,5 +32,6 @@ object Stages {
 
   case class ChooseGameMode() extends Stage
   case class ChooseMoveToThrow() extends Stage
+  case class PlayTheGame() extends Stage
 
 }

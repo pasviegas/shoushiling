@@ -27,7 +27,7 @@ package com.pasviegas.shoushiling.cli
 import com.pasviegas.shoushiling.cli.Exceptions.{GameHasNoMatch, GameHasNotBeenConfigured}
 import com.pasviegas.shoushiling.cli.Inputs._
 import com.pasviegas.shoushiling.cli.Messages._
-import com.pasviegas.shoushiling.cli.Stages.{ChooseGameMode, ChooseMoveToThrow}
+import com.pasviegas.shoushiling.cli.Stages.{PlayTheGame, ChooseGameMode, ChooseMoveToThrow}
 import com.pasviegas.shoushiling.core.GamePlay.Throw
 
 import scala.util.{Failure, Success, Try}
@@ -70,7 +70,8 @@ case class GameSystem() {
   private def selectHomeMoveToThrow(state: GameState, thrown: Throw) =
     Success(state.copy(
       `match` = state.`match`.map(players => players.copy(home = players.home.copy(throws = thrown))),
-      message = Some(HomePlayerMoveSelectedMessage)
+      message = Some(HomePlayerMoveSelectedMessage),
+      nextStage = PlayTheGame()
     ))
 
   private def selectAdversaryMoveToThrow(state: GameState, thrown: Throw) =
