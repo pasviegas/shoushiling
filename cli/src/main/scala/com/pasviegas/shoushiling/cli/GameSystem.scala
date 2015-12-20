@@ -24,7 +24,7 @@
 // For more information, please refer to <http://unlicense.org/>
 package com.pasviegas.shoushiling.cli
 
-import com.pasviegas.shoushiling.cli.Exceptions.GameHasNoMatch
+import com.pasviegas.shoushiling.cli.Exceptions.{GameHasNoMatch, GameHasNotBeenConfigured}
 import com.pasviegas.shoushiling.cli.Inputs._
 import com.pasviegas.shoushiling.cli.Messages._
 import com.pasviegas.shoushiling.core.GamePlay.Throw
@@ -76,8 +76,11 @@ case class GameSystem() {
     ))
 
   private def play(state: GameState) =
-    state.`match`.map(players =>
-      Success(state.copy(outcome = Some(state.game.get.play(players)))))
-      .getOrElse(Failure(GameHasNoMatch))
+    (state.game, state.`match`) match {
+      case (Some(game), Some(players)) => Success(state.copy(outcome = Some(game.play(players))))
+      case (Some(game), None) => Failure(GameHasNoMatch)
+      case (None, Some(players)) => Failure(GameHasNotBeenConfigured)
+      case (None, None) => Failure(GameHasNotBeenConfigured)
+    }
 
 }

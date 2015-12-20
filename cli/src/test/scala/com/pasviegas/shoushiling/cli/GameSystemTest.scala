@@ -24,7 +24,7 @@
 // For more information, please refer to <http://unlicense.org/>
 package com.pasviegas.shoushiling.cli
 
-import com.pasviegas.shoushiling.cli.Exceptions.GameHasNoMatch
+import com.pasviegas.shoushiling.cli.Exceptions.{GameHasNotBeenConfigured, GameHasNoMatch}
 import com.pasviegas.shoushiling.cli.Inputs._
 import com.pasviegas.shoushiling.cli.Messages._
 import com.pasviegas.shoushiling.core.GamePlay.{Match, Move, Player, Throw}
@@ -135,6 +135,22 @@ class GameSystemTest extends FlatSpec with MustMatchers {
 
     (GameSystem() request Play(stateWithNoMatch)) must be(Failure(GameHasNoMatch))
   }
-  
+
+  "If there if no game rules are set, the game" should "not be played" in {
+
+    val championshipFinale = Match(
+      Player("1", Throw(Move('Paper))),
+      Player("2", Throw(Move('Paper)))
+    )
+
+    val stateWithNoMatch = GameState(`match` = Some(championshipFinale))
+
+    (GameSystem() request Play(stateWithNoMatch)) must be(Failure(GameHasNotBeenConfigured))
+  }
+
+  "If there if no game rules and no match are set, the game" should "not be played" in {
+    (GameSystem() request Play(GameState())) must be(Failure(GameHasNotBeenConfigured))
+  }
+
 }
 

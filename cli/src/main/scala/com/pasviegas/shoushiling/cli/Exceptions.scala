@@ -27,5 +27,6 @@ package com.pasviegas.shoushiling.cli
 object Exceptions {
 
   case object GameHasNoMatch extends Exception
+  case object GameHasNotBeenConfigured extends Exception
 
 }
