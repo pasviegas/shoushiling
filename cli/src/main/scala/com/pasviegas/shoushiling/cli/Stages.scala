@@ -24,10 +24,12 @@
 // For more information, please refer to <http://unlicense.org/>
 package com.pasviegas.shoushiling.cli
 
-object Exceptions {
+object Stages {
 
-  case object GameHasNoMatch extends Exception
+  trait Stage
 
-  case object GameHasNotBeenConfigured extends Exception
+  case class GameStarted() extends Stage
+
+  case class ChooseGameMode() extends Stage
 
 }

@@ -24,9 +24,10 @@
 // For more information, please refer to <http://unlicense.org/>
 package com.pasviegas.shoushiling.cli
 
-import com.pasviegas.shoushiling.cli.Exceptions.{GameHasNotBeenConfigured, GameHasNoMatch}
+import com.pasviegas.shoushiling.cli.Exceptions.{GameHasNoMatch, GameHasNotBeenConfigured}
 import com.pasviegas.shoushiling.cli.Inputs._
 import com.pasviegas.shoushiling.cli.Messages._
+import com.pasviegas.shoushiling.cli.Stages.ChooseGameMode
 import com.pasviegas.shoushiling.core.GamePlay.{Match, Move, Player, Throw}
 import org.scalatest.{FlatSpec, MustMatchers}
 
@@ -46,6 +47,10 @@ class GameSystemTest extends FlatSpec with MustMatchers {
 
   "When the game starts, the player " should " receive a welcome message" in {
     (GameSystem() request StartGame(GameState())).get.message must be(Some(WelcomeMessage))
+  }
+
+  "After the game starts, the player " must " choose the game mode" in {
+    (GameSystem() request StartGame(GameState())).get.nextStage must be(ChooseGameMode())
   }
 
   "A player " must "be able to choose to play alone" in {

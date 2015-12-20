@@ -25,8 +25,9 @@
 package com.pasviegas.shoushiling.cli
 
 import com.pasviegas.shoushiling.cli.Messages.Message
+import com.pasviegas.shoushiling.cli.Stages.{GameStarted, Stage}
 import com.pasviegas.shoushiling.core.GamePlay.Match
-import com.pasviegas.shoushiling.core.engine.{GameOutcome, Game}
+import com.pasviegas.shoushiling.core.engine.{Game, GameOutcome}
 
 sealed trait GameMode
 
@@ -40,5 +41,6 @@ case class GameState(
   `match`: Option[Match] = None,
   message: Option[Message] = None,
   game: Option[Game] = None,
-  outcome: Option[GameOutcome] = None
+  outcome: Option[GameOutcome] = None,
+  nextStage: Stage = GameStarted()
 )
