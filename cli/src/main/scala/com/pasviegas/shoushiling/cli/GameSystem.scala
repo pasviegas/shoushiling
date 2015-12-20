@@ -25,6 +25,7 @@
 package com.pasviegas.shoushiling.cli
 
 import com.pasviegas.shoushiling.cli.Inputs.{GameInput, MultiPlayerMode, SinglePlayerMode, StartGame}
+import com.pasviegas.shoushiling.cli.Messages.WelcomeMessage
 
 case class GameSystem() {
 
@@ -34,9 +35,12 @@ case class GameSystem() {
     case MultiPlayerMode(state) => selectMultiPlayer(state)
   }
 
-  private def startGame(state: GameState) = GameState(started = true)
+  private def startGame(state: GameState) =
+    state.copy(started = true, message = Some(WelcomeMessage))
 
-  private def selectSinglePlayer(state: GameState): GameState = state.copy(mode = Some(SinglePlayer))
+  private def selectSinglePlayer(state: GameState): GameState =
+    state.copy(mode = Some(SinglePlayer))
 
-  private def selectMultiPlayer(state: GameState): GameState = state.copy(mode = Some(MultiPlayer))
+  private def selectMultiPlayer(state: GameState): GameState =
+    state.copy(mode = Some(MultiPlayer))
 }

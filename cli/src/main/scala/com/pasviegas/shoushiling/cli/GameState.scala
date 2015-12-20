@@ -24,10 +24,16 @@
 // For more information, please refer to <http://unlicense.org/>
 package com.pasviegas.shoushiling.cli
 
+import com.pasviegas.shoushiling.cli.Messages.Message
+
 sealed trait GameMode
 
 case object SinglePlayer extends GameMode
 
 case object MultiPlayer extends GameMode
 
-case class GameState(started: Boolean = false, mode: Option[GameMode] = None)
+case class GameState(
+  started: Boolean = false,
+  mode: Option[GameMode] = None,
+  message: Option[Message] = None
+)

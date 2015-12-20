@@ -24,27 +24,10 @@
 // For more information, please refer to <http://unlicense.org/>
 package com.pasviegas.shoushiling.cli
 
-import com.pasviegas.shoushiling.cli.Inputs.{MultiPlayerMode, SinglePlayerMode, StartGame}
-import com.pasviegas.shoushiling.cli.Messages.WelcomeMessage
-import org.scalatest.{FlatSpec, MustMatchers}
+object Messages {
 
-class GameSystemTest extends FlatSpec with MustMatchers {
+  trait Message
 
-  "A player " must "be able to start the game" in {
-    (GameSystem() request StartGame(GameState())).started must be(true)
-  }
-
-  "When the game starts, the player " should " receive a welcome message" in {
-    (GameSystem() request StartGame(GameState())).message must be(Some(WelcomeMessage))
-  }
-
-  "A player " must "be able to choose to play alone" in {
-    (GameSystem() request SinglePlayerMode(GameState())).mode must be(Some(SinglePlayer))
-  }
-
-  "A player " must "be able to choose to play with another player" in {
-    (GameSystem() request MultiPlayerMode(GameState())).mode must be(Some(MultiPlayer))
-  }
+  case object WelcomeMessage extends Message
 
 }
-
