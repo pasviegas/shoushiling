@@ -24,15 +24,18 @@
 // For more information, please refer to <http://unlicense.org/>
 package com.pasviegas.shoushiling.cli
 
+import com.pasviegas.shoushiling.cli.Exceptions.GameHasNoMatch
 import com.pasviegas.shoushiling.cli.Inputs._
 import com.pasviegas.shoushiling.cli.Messages._
 import com.pasviegas.shoushiling.core.GamePlay.Throw
+
+import scala.util.{Failure, Success, Try}
 
 case class GameSystem() {
 
   import com.pasviegas.shoushiling.core._
 
-  def request(input: GameInput): GameState = input match {
+  def request(input: GameInput): Try[GameState] = input match {
     case StartGame(state) => startGame(state)
     case SinglePlayerMode(state) => selectSinglePlayer(state)
     case MultiPlayerMode(state) => selectMultiPlayer(state)
@@ -42,36 +45,39 @@ case class GameSystem() {
   }
 
   private def startGame(state: GameState) =
-    state.copy(
+    Success(state.copy(
       started = true,
       message = Some(WelcomeMessage),
       game = Some(DefaultGame)
-    )
+    ))
 
-  private def selectSinglePlayer(state: GameState): GameState =
-    state.copy(
+  private def selectSinglePlayer(state: GameState) =
+    Success(state.copy(
       mode = Some(SinglePlayer),
       message = Some(SinglePlayerSelectedMessage)
-    )
+    ))
 
-  private def selectMultiPlayer(state: GameState): GameState =
-    state.copy(
+  private def selectMultiPlayer(state: GameState) =
+    Success(state.copy(
       mode = Some(MultiPlayer),
       message = Some(MultiPlayerSelectedMessage)
-    )
+    ))
 
-  private def selectHomeMoveToThrow(state: GameState, thrown: Throw): GameState =
-    state.copy(
+  private def selectHomeMoveToThrow(state: GameState, thrown: Throw) =
+    Success(state.copy(
       `match` = state.`match`.map(players => players.copy(home = players.home.copy(throws = thrown))),
       message = Some(HomePlayerMoveSelectedMessage)
-    )
+    ))
 
-  private def selectAdversaryMoveToThrow(state: GameState, thrown: Throw): GameState =
-    state.copy(
+  private def selectAdversaryMoveToThrow(state: GameState, thrown: Throw) =
+    Success(state.copy(
       `match` = state.`match`.map(players => players.copy(adversary = players.adversary.copy(throws = thrown))),
       message = Some(AdversaryPlayerMoveSelectedMessage)
-    )
+    ))
 
   private def play(state: GameState) =
-    state.copy(outcome = Some(state.game.get.play(state.`match`.get)))
+    state.`match`.map(players =>
+      Success(state.copy(outcome = Some(state.game.get.play(players)))))
+      .getOrElse(Failure(GameHasNoMatch))
+
 }

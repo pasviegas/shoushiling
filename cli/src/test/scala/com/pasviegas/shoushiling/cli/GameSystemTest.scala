@@ -24,85 +24,117 @@
 // For more information, please refer to <http://unlicense.org/>
 package com.pasviegas.shoushiling.cli
 
+import com.pasviegas.shoushiling.cli.Exceptions.GameHasNoMatch
 import com.pasviegas.shoushiling.cli.Inputs._
 import com.pasviegas.shoushiling.cli.Messages._
 import com.pasviegas.shoushiling.core.GamePlay.{Match, Move, Player, Throw}
 import org.scalatest.{FlatSpec, MustMatchers}
 
+import scala.util.Failure
+
 class GameSystemTest extends FlatSpec with MustMatchers {
 
   "A player " must "be able to start the game" in {
-    (GameSystem() request StartGame(GameState())).started must be(true)
+    (GameSystem() request StartGame(GameState())).get.started must be(true)
   }
 
   "A player " must "be able to start the game with the default rules" in {
     import com.pasviegas.shoushiling.core._
 
-    (GameSystem() request StartGame(GameState())).game must be(Some(DefaultGame))
+    (GameSystem() request StartGame(GameState())).get.game must be(Some(DefaultGame))
   }
 
   "When the game starts, the player " should " receive a welcome message" in {
-    (GameSystem() request StartGame(GameState())).message must be(Some(WelcomeMessage))
+    (GameSystem() request StartGame(GameState())).get.message must be(Some(WelcomeMessage))
   }
 
   "A player " must "be able to choose to play alone" in {
-    (GameSystem() request SinglePlayerMode(GameState())).mode must be(Some(SinglePlayer))
+    (GameSystem() request SinglePlayerMode(GameState())).get.mode must be(Some(SinglePlayer))
   }
 
   "When the player selects single player, he" should " receive a feedback message" in {
-    (GameSystem() request SinglePlayerMode(GameState())).message must be(Some(SinglePlayerSelectedMessage))
+    (GameSystem() request SinglePlayerMode(GameState())).get.message must be(Some(SinglePlayerSelectedMessage))
   }
 
   "A player " must "be able to choose to play with another player" in {
-    (GameSystem() request MultiPlayerMode(GameState())).mode must be(Some(MultiPlayer))
+    (GameSystem() request MultiPlayerMode(GameState())).get.mode must be(Some(MultiPlayer))
   }
 
   "When the player selects multi player, he" should " receive a feedback message" in {
-    (GameSystem() request MultiPlayerMode(GameState())).message must be(Some(MultiPlayerSelectedMessage))
+    (GameSystem() request MultiPlayerMode(GameState())).get.message must be(Some(MultiPlayerSelectedMessage))
   }
 
   "The home player " must "be able to choose which move to throw" in {
-    val championshipFinale = Match(Player("1", Throw(Move('Paper))), Player("2", Throw(Move('Paper))))
+    val championshipFinale = Match(
+      Player("1", Throw(Move('Paper))),
+      Player("2", Throw(Move('Paper)))
+    )
+
     val game = GameState(`match` = Some(championshipFinale))
 
-    (GameSystem() request SelectHomeMoveToThrow(game, Throw(Move('Rock)))).`match`
+    (GameSystem() request SelectHomeMoveToThrow(game, Throw(Move('Rock)))).get.`match`
       .get.home.throws must be(Throw(Move('Rock)))
   }
 
   "When the home player selects its throw, he" should " receive a feedback message" in {
-    val championshipFinale = Match(Player("1", Throw(Move('Paper))), Player("2", Throw(Move('Paper))))
+    val championshipFinale = Match(
+      Player("1", Throw(Move('Paper))),
+      Player("2", Throw(Move('Paper)))
+    )
+
     val game = GameState(`match` = Some(championshipFinale))
 
     (GameSystem() request SelectHomeMoveToThrow(game, Throw(Move('Rock))))
-      .message must be(Some(HomePlayerMoveSelectedMessage))
+      .get.message must be(Some(HomePlayerMoveSelectedMessage))
   }
 
   "The adversary player " must "be able to choose which move to throw" in {
-    val championshipFinale = Match(Player("1", Throw(Move('Paper))), Player("2", Throw(Move('Paper))))
+    val championshipFinale = Match(
+      Player("1", Throw(Move('Paper))),
+      Player("2", Throw(Move('Paper)))
+    )
+
     val game = GameState(`match` = Some(championshipFinale))
 
-    (GameSystem() request SelectAdversaryMoveToThrow(game, Throw(Move('Rock)))).`match`
+    (GameSystem() request SelectAdversaryMoveToThrow(game, Throw(Move('Rock)))).get.`match`
       .get.adversary.throws must be(Throw(Move('Rock)))
   }
 
   "When the adversary player selects its throw, he" should " receive a feedback message" in {
-    val championshipFinale = Match(Player("1", Throw(Move('Paper))), Player("2", Throw(Move('Paper))))
+    val championshipFinale = Match(
+      Player("1", Throw(Move('Paper))),
+      Player("2", Throw(Move('Paper)))
+    )
+
     val game = GameState(`match` = Some(championshipFinale))
 
     (GameSystem() request SelectAdversaryMoveToThrow(game, Throw(Move('Rock))))
-      .message must be(Some(AdversaryPlayerMoveSelectedMessage))
+      .get.message must be(Some(AdversaryPlayerMoveSelectedMessage))
   }
 
   "Players" should " be able to play the game and see the outcome" in {
     import com.pasviegas.shoushiling.core._
 
-    val championshipFinale = Match(Player("1", Throw(Move('Paper))), Player("2", Throw(Move('Paper))))
-    val game = GameState(
+    val championshipFinale = Match(
+      Player("1", Throw(Move('Paper))),
+      Player("2", Throw(Move('Paper)))
+    )
+
+    val defaultGame = GameState(
       `match` = Some(championshipFinale),
       game = Some(DefaultGame)
     )
 
-    (GameSystem() request Play(game)).outcome mustBe defined
+    (GameSystem() request Play(defaultGame)).get.outcome mustBe defined
   }
+
+  "If there is no match set, the game" should "not be played" in {
+    import com.pasviegas.shoushiling.core._
+
+    val stateWithNoMatch = GameState(game = Some(DefaultGame))
+
+    (GameSystem() request Play(stateWithNoMatch)) must be(Failure(GameHasNoMatch))
+  }
+  
 }
 
