@@ -46,21 +46,21 @@ case object SelectPlayerThrowSystem extends AGameSystem {
 
   private def selectSinglePlayerHome(state: GameState, thrown: Throw) =
     Success(state.copy(
-      `match` = state.`match`.map(players => players.copy(home = players.home.copy(throws = thrown))),
+      preMatch = state.preMatch.copy(homeThrow = Some(thrown)),
       message = Some(HomePlayerMoveSelectedMessage),
       nextStage = PlayTheGame()
     ))
 
   private def selectMultiPlayerHome(state: GameState, thrown: Throw) =
     Success(state.copy(
-      `match` = state.`match`.map(players => players.copy(home = players.home.copy(throws = thrown))),
+      preMatch = state.preMatch.copy(homeThrow = Some(thrown)),
       message = Some(HomePlayerMoveSelectedMessage),
       nextStage = AdversaryPlayerChooseMoveToThrow()
     ))
 
   private def selectAdversaryMoveToThrow(state: GameState, thrown: Throw) =
     Success(state.copy(
-      `match` = state.`match`.map(players => players.copy(adversary = players.adversary.copy(throws = thrown))),
+      `match` = state.preMatch.copy(adversaryThrow = Some(thrown)).asMatch,
       message = Some(AdversaryPlayerMoveSelectedMessage),
       nextStage = PlayTheGame()
     ))

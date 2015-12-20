@@ -26,7 +26,7 @@ package com.pasviegas.shoushiling.cli
 
 import com.pasviegas.shoushiling.cli.Messages.Message
 import com.pasviegas.shoushiling.cli.Stages.{GameStarted, Stage}
-import com.pasviegas.shoushiling.core.GamePlay.Match
+import com.pasviegas.shoushiling.core.GamePlay.{Match, Player, Throw}
 import com.pasviegas.shoushiling.core.engine.{Game, GameOutcome}
 
 sealed trait GameMode
@@ -35,9 +35,18 @@ case object SinglePlayer extends GameMode
 
 case object MultiPlayer extends GameMode
 
+case class PreMatch(homeThrow: Option[Throw] = None, adversaryThrow: Option[Throw] = None) {
+
+  def asMatch: Option[Match] = for {
+    player1Throw <- homeThrow
+    player2Throw <- adversaryThrow
+  } yield Match(Player("1", player1Throw), Player("2", player2Throw))
+}
+
 case class GameState(
   started: Boolean = false,
   mode: Option[GameMode] = None,
+  preMatch: PreMatch = PreMatch(),
   `match`: Option[Match] = None,
   message: Option[Message] = None,
   game: Option[Game] = None,

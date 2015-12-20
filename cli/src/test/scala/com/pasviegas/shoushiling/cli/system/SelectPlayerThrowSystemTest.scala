@@ -28,8 +28,8 @@ import com.pasviegas.shoushiling.cli.Inputs._
 import com.pasviegas.shoushiling.cli.Messages._
 import com.pasviegas.shoushiling.cli.Stages._
 import com.pasviegas.shoushiling.cli.system.Exceptions.NoGameModeSelected
-import com.pasviegas.shoushiling.cli.{GameState, MultiPlayer, SinglePlayer}
-import com.pasviegas.shoushiling.core.GamePlay.{Match, Move, Player, Throw}
+import com.pasviegas.shoushiling.cli.{GameState, MultiPlayer, PreMatch, SinglePlayer}
+import com.pasviegas.shoushiling.core.GamePlay.{Move, Throw}
 import org.scalatest.{FlatSpec, MustMatchers}
 
 import scala.util.Failure
@@ -37,108 +37,55 @@ import scala.util.Failure
 class SelectPlayerThrowSystemTest extends FlatSpec with MustMatchers {
 
   "The home player" must "be able to choose which move to throw" in {
-    val championshipFinale = Match(
-      Player("1", Throw(Move('Paper))),
-      Player("2", Throw(Move('Paper)))
-    )
-
-    val game = GameState(
-      `match` = Some(championshipFinale),
-      mode = Some(SinglePlayer)
-    )
+    val game = GameState(mode = Some(SinglePlayer))
 
     (SelectPlayerThrowSystem request SelectHomeMoveToThrow(game, Throw(Move('Rock))))
-      .get.`match`.get.home.throws must be(Throw(Move('Rock)))
+      .get.preMatch.homeThrow.get must be(Throw(Move('Rock)))
   }
 
   "When the home player selects its throw, he" should "receive a feedback message" in {
-    val championshipFinale = Match(
-      Player("1", Throw(Move('Paper))),
-      Player("2", Throw(Move('Paper)))
-    )
-
-    val game = GameState(
-      `match` = Some(championshipFinale),
-      mode = Some(SinglePlayer)
-    )
+    val game = GameState(mode = Some(SinglePlayer))
 
     (SelectPlayerThrowSystem request SelectHomeMoveToThrow(game, Throw(Move('Rock))))
       .get.message must be(Some(HomePlayerMoveSelectedMessage))
   }
 
   "If there if no game mode set, the game" should "not be played" in {
-    val championshipFinale = Match(
-      Player("1", Throw(Move('Paper))),
-      Player("2", Throw(Move('Paper)))
-    )
-
-    val game = GameState(`match` = Some(championshipFinale))
-    val moveToThrow: SelectHomeMoveToThrow = SelectHomeMoveToThrow(game, Throw(Move('Rock)))
+    val moveToThrow: SelectHomeMoveToThrow = SelectHomeMoveToThrow(GameState(), Throw(Move('Rock)))
 
     (SelectPlayerThrowSystem request moveToThrow) must be(Failure(NoGameModeSelected))
   }
 
   "After the home player chooses its throw and game mode is single player, it" should "play the game" in {
-    val championshipFinale = Match(
-      Player("1", Throw(Move('Paper))),
-      Player("2", Throw(Move('Paper)))
-    )
-
-    val game = GameState(
-      `match` = Some(championshipFinale),
-      mode = Some(SinglePlayer)
-    )
+    val game = GameState(mode = Some(SinglePlayer))
 
     (SelectPlayerThrowSystem request SelectHomeMoveToThrow(game, Throw(Move('Rock))))
       .get.nextStage must be(PlayTheGame())
   }
 
   "After the home player chooses its throw and game mode is multi player, it" should "wait for the next player" in {
-    val championshipFinale = Match(
-      Player("1", Throw(Move('Paper))),
-      Player("2", Throw(Move('Paper)))
-    )
-
-    val game = GameState(
-      `match` = Some(championshipFinale),
-      mode = Some(MultiPlayer)
-    )
+    val game = GameState(mode = Some(MultiPlayer))
 
     (SelectPlayerThrowSystem request SelectHomeMoveToThrow(game, Throw(Move('Rock))))
       .get.nextStage must be(AdversaryPlayerChooseMoveToThrow())
   }
 
   "The adversary player " must "be able to choose which move to throw" in {
-    val championshipFinale = Match(
-      Player("1", Throw(Move('Paper))),
-      Player("2", Throw(Move('Paper)))
-    )
-
-    val game = GameState(`match` = Some(championshipFinale))
+    val game = GameState(preMatch = PreMatch(homeThrow = Some(Throw(Move('Paper)))))
 
     (SelectPlayerThrowSystem request SelectAdversaryMoveToThrow(game, Throw(Move('Rock))))
       .get.`match`.get.adversary.throws must be(Throw(Move('Rock)))
   }
 
   "When the adversary player selects its throw, he" should "receive a feedback message" in {
-    val championshipFinale = Match(
-      Player("1", Throw(Move('Paper))),
-      Player("2", Throw(Move('Paper)))
-    )
-
-    val game = GameState(`match` = Some(championshipFinale))
+    val game = GameState(preMatch = PreMatch(homeThrow = Some(Throw(Move('Paper)))))
 
     (SelectPlayerThrowSystem request SelectAdversaryMoveToThrow(game, Throw(Move('Rock))))
       .get.message must be(Some(AdversaryPlayerMoveSelectedMessage))
   }
 
   "After the adversary player chooses its throw, players " should "play the game" in {
-    val championshipFinale = Match(
-      Player("1", Throw(Move('Paper))),
-      Player("2", Throw(Move('Paper)))
-    )
-
-    val game = GameState(`match` = Some(championshipFinale))
+    val game = GameState(preMatch = PreMatch(homeThrow = Some(Throw(Move('Paper)))))
 
     (SelectPlayerThrowSystem request SelectAdversaryMoveToThrow(game, Throw(Move('Rock))))
       .get.nextStage must be(PlayTheGame())

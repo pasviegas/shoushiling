@@ -26,8 +26,10 @@ package com.pasviegas.shoushiling.cli.system
 
 import com.pasviegas.shoushiling.cli.GameState
 import com.pasviegas.shoushiling.cli.Inputs._
-import com.pasviegas.shoushiling.core.GamePlay.{Move, Throw}
+import com.pasviegas.shoushiling.core.GamePlay.{Move, Player, Throw}
 import org.scalatest.{FlatSpec, MustMatchers}
+
+import scala.util.Try
 
 class GameSystemTest extends FlatSpec with MustMatchers {
 
@@ -58,5 +60,20 @@ class GameSystemTest extends FlatSpec with MustMatchers {
   "Game system" should "behave as a partial function" in {
     (GameSystem apply StartGame(GameState())).get.started must be(true)
   }
+
+  "A player" should "be able to play a full multi player game" in {
+    import com.pasviegas.shoushiling.core._
+
+    val finalGame: Try[GameState] = for {
+      gameStarted <- GameSystem request StartGame(GameState())
+      modeChosen <- GameSystem request MultiPlayerMode(gameStarted)
+      homeThrowChosen <- GameSystem request SelectHomeMoveToThrow(modeChosen, Throw(Rock))
+      throwsChosen <- GameSystem request SelectAdversaryMoveToThrow(homeThrowChosen, Throw(Scissors))
+      gamePlayed <- GameSystem request Play(throwsChosen)
+    } yield gamePlayed
+
+    finalGame.get.outcome.get.winner.get must be(Player("1", Throw(Rock)))
+  }
+
 }
 
