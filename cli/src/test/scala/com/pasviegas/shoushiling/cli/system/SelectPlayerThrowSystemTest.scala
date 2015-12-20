@@ -24,11 +24,11 @@
 // For more information, please refer to <http://unlicense.org/>
 package com.pasviegas.shoushiling.cli.system
 
-import com.pasviegas.shoushiling.cli.system.exceptions.NoGameModeSelected
+import com.pasviegas.shoushiling.cli._
+import com.pasviegas.shoushiling.cli.system.exceptions.{NoGameModeSelected, UnknownGameModeSelected}
 import com.pasviegas.shoushiling.cli.system.inputs.{SelectAdversaryMoveToThrow, SelectHomeMoveToThrow}
 import com.pasviegas.shoushiling.cli.system.messages._
 import com.pasviegas.shoushiling.cli.system.stages.{AdversaryPlayerChooseMoveToThrow, PlayTheGame}
-import com.pasviegas.shoushiling.cli.{GameState, MultiPlayer, PreMatch, SinglePlayer}
 import com.pasviegas.shoushiling.core.GamePlay.{Move, Throw}
 import org.scalatest.{FlatSpec, MustMatchers}
 
@@ -97,5 +97,13 @@ class SelectPlayerThrowSystemTest extends FlatSpec with MustMatchers {
       .get.nextStage must be(PlayTheGame())
   }
 
+  "When the user selects an unknown game mode, it" should "not be able to play it" in {
+    val game = GameState(
+      preMatch = PreMatch(homeThrow = Some(Throw(Move('Paper)))),
+      mode = Some(GameMode('MMORPG))
+    )
+    val moveToThrow = SelectHomeMoveToThrow(game, Throw(Move('Rock)))
+    (SelectPlayerThrowSystem(new Random) request moveToThrow) must be(Failure(UnknownGameModeSelected))
+  }
 }
 

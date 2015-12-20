@@ -24,20 +24,43 @@
 // For more information, please refer to <http://unlicense.org/>
 package com.pasviegas.shoushiling.cli.system
 
+import com.pasviegas.shoushiling.cli.system.inputs._
+import com.pasviegas.shoushiling.cli.{GameMode, GameState}
+import com.pasviegas.shoushiling.core.GamePlay.{Move, Throw}
+
 package object stages {
 
-  trait Stage
+  trait Stage {
+    def input(state: GameState, userInput: Option[String] = None): Option[GameInput]
+  }
 
-  case class GameStarted() extends Stage
+  case class GameStarted() extends Stage {
+    def input(state: GameState, userInput: Option[String]): Option[GameInput] =
+      Some(StartGame(state))
+  }
 
-  case class ChooseGameMode() extends Stage
+  case class ChooseGameMode() extends Stage {
+    def input(state: GameState, userInput: Option[String]): Option[GameInput] =
+      Some(SelectPlayerMode(state, GameMode(Symbol(userInput.get.toLowerCase()))))
+  }
 
-  case class HomePlayerChooseMoveToThrow() extends Stage
+  case class HomePlayerChooseMoveToThrow() extends Stage {
+    def input(state: GameState, userInput: Option[String]): Option[GameInput] =
+      Some(SelectHomeMoveToThrow(state, Throw(Move(Symbol(userInput.get)))))
+  }
 
-  case class AdversaryPlayerChooseMoveToThrow() extends Stage
+  case class AdversaryPlayerChooseMoveToThrow() extends Stage {
+    def input(state: GameState, userInput: Option[String]): Option[GameInput] =
+      Some(SelectAdversaryMoveToThrow(state, Throw(Move(Symbol(userInput.get)))))
+  }
 
-  case class PlayTheGame() extends Stage
+  case class PlayTheGame() extends Stage {
+    def input(state: GameState, userInput: Option[String]): Option[GameInput] =
+      Some(Play(state))
+  }
 
-  case class GameOver() extends Stage
+  case class GameOver() extends Stage {
+    def input(state: GameState, userInput: Option[String]): Option[GameInput] = None
+  }
 
 }

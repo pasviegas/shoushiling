@@ -24,43 +24,50 @@
 // For more information, please refer to <http://unlicense.org/>
 package com.pasviegas.shoushiling.cli.system
 
-import com.pasviegas.shoushiling.cli.system.inputs.{MultiPlayerMode, SinglePlayerMode}
+import com.pasviegas.shoushiling.cli.system.exceptions.UnknownGameModeSelected
+import com.pasviegas.shoushiling.cli.system.inputs.SelectPlayerMode
 import com.pasviegas.shoushiling.cli.system.messages.{MultiPlayerSelectedMessage, SinglePlayerSelectedMessage}
 import com.pasviegas.shoushiling.cli.system.stages.HomePlayerChooseMoveToThrow
-import com.pasviegas.shoushiling.cli.{GameState, MultiPlayer, SinglePlayer}
+import com.pasviegas.shoushiling.cli.{GameMode, GameState, MultiPlayer, SinglePlayer}
 import org.scalatest.{FlatSpec, MustMatchers}
+
+import scala.util.Failure
 
 class SelectPlayerModeSystemTest extends FlatSpec with MustMatchers {
 
   "A player" must "be able to choose to play alone" in {
-    (SelectPlayerModeSystem request SinglePlayerMode(GameState()))
+    (SelectPlayerModeSystem request SelectPlayerMode(GameState(), SinglePlayer))
       .get.mode must be(Some(SinglePlayer))
   }
 
   "When the player selects single player, he" should "receive a feedback message" in {
-    (SelectPlayerModeSystem request SinglePlayerMode(GameState()))
+    (SelectPlayerModeSystem request SelectPlayerMode(GameState(), SinglePlayer))
       .get.message must be(Some(SinglePlayerSelectedMessage))
   }
 
   "After the player chooses single player" must "choose its move" in {
-    (SelectPlayerModeSystem request SinglePlayerMode(GameState()))
+    (SelectPlayerModeSystem request SelectPlayerMode(GameState(), SinglePlayer))
       .get.nextStage must be(HomePlayerChooseMoveToThrow())
   }
 
   "A player" must "be able to choose to play with another player" in {
-    (SelectPlayerModeSystem request MultiPlayerMode(GameState()))
+    (SelectPlayerModeSystem request SelectPlayerMode(GameState(), MultiPlayer))
       .get.mode must be(Some(MultiPlayer))
   }
 
   "When the player selects multi player, he" should "receive a feedback message" in {
-    (SelectPlayerModeSystem request MultiPlayerMode(GameState()))
+    (SelectPlayerModeSystem request SelectPlayerMode(GameState(), MultiPlayer))
       .get.message must be(Some(MultiPlayerSelectedMessage))
   }
 
   "After the player chooses multi player" must "choose its move" in {
-    (SelectPlayerModeSystem request MultiPlayerMode(GameState()))
+    (SelectPlayerModeSystem request SelectPlayerMode(GameState(), MultiPlayer))
       .get.nextStage must be(HomePlayerChooseMoveToThrow())
   }
 
+  "When the user selects an unknown game mode, it" should "not be able to play it" in {
+    val mmorpgGameMode: SelectPlayerMode = SelectPlayerMode(GameState(), GameMode('MMORPG))
+    (SelectPlayerModeSystem request mmorpgGameMode) must be(Failure(UnknownGameModeSelected))
+  }
 }
 

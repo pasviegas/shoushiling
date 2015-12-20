@@ -24,18 +24,20 @@
 // For more information, please refer to <http://unlicense.org/>
 package com.pasviegas.shoushiling.cli.system
 
-import com.pasviegas.shoushiling.cli.system.inputs.{GameInput, MultiPlayerMode, SinglePlayerMode}
+import com.pasviegas.shoushiling.cli.system.exceptions.UnknownGameModeSelected
+import com.pasviegas.shoushiling.cli.system.inputs.{GameInput, SelectPlayerMode}
 import com.pasviegas.shoushiling.cli.system.messages.{MultiPlayerSelectedMessage, SinglePlayerSelectedMessage}
 import com.pasviegas.shoushiling.cli.system.stages.HomePlayerChooseMoveToThrow
-import com.pasviegas.shoushiling.cli.{GameState, MultiPlayer, SinglePlayer}
+import com.pasviegas.shoushiling.cli.{GameMode, GameState, MultiPlayer, SinglePlayer}
 
-import scala.util.{Success, Try}
+import scala.util.{Failure, Success, Try}
 
 case object SelectPlayerModeSystem extends AGameSystem {
 
   def request: PartialFunction[GameInput, Try[GameState]] = {
-    case SinglePlayerMode(state) => selectSinglePlayer(state)
-    case MultiPlayerMode(state) => selectMultiPlayer(state)
+    case SelectPlayerMode(state, GameMode('single)) => selectSinglePlayer(state)
+    case SelectPlayerMode(state, GameMode('multi)) => selectMultiPlayer(state)
+    case SelectPlayerMode(state, GameMode(_)) => Failure(UnknownGameModeSelected)
   }
 
   private def selectSinglePlayer(state: GameState) =

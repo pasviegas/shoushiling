@@ -32,4 +32,6 @@ package object exceptions {
 
   case object NoGameModeSelected extends Exception
 
+  case object UnknownGameModeSelected extends Exception
+
 }

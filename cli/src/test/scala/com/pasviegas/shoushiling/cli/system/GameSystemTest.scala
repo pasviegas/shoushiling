@@ -39,11 +39,11 @@ class GameSystemTest extends FlatSpec with MustMatchers {
   }
 
   "Game system" should "respond to SinglePlayerMode input" in {
-    (GameSystem.request isDefinedAt SinglePlayerMode(GameState())) must be(true)
+    (GameSystem.request isDefinedAt SelectPlayerMode(GameState(), SinglePlayer)) must be(true)
   }
 
   "Game system" should "respond to MultiPlayerMode input" in {
-    (GameSystem.request isDefinedAt MultiPlayerMode(GameState())) must be(true)
+    (GameSystem.request isDefinedAt SelectPlayerMode(GameState(), MultiPlayer)) must be(true)
   }
 
   "Game system" should "respond to SelectHomeMoveToThrow input" in {
@@ -67,7 +67,7 @@ class GameSystemTest extends FlatSpec with MustMatchers {
 
     val finalGame: Try[GameState] = for {
       gameStarted <- GameSystem request StartGame(GameState())
-      modeChosen <- GameSystem request MultiPlayerMode(gameStarted)
+      modeChosen <- GameSystem request SelectPlayerMode(gameStarted, MultiPlayer)
       homeThrowChosen <- GameSystem request SelectHomeMoveToThrow(modeChosen, Throw(Rock))
       throwsChosen <- GameSystem request SelectAdversaryMoveToThrow(homeThrowChosen, Throw(Scissors))
       gamePlayed <- GameSystem request Play(throwsChosen)
@@ -81,7 +81,7 @@ class GameSystemTest extends FlatSpec with MustMatchers {
 
     val finalGame: Try[GameState] = for {
       gameStarted <- GameSystem request StartGame(GameState())
-      modeChosen <- GameSystem request SinglePlayerMode(gameStarted)
+      modeChosen <- GameSystem request SelectPlayerMode(gameStarted, SinglePlayer)
       throwsChosen <- GameSystem request SelectHomeMoveToThrow(modeChosen, Throw(Rock))
       gamePlayed <- GameSystem request Play(throwsChosen)
     } yield gamePlayed

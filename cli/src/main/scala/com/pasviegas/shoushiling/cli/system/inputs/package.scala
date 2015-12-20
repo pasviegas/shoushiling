@@ -24,7 +24,7 @@
 // For more information, please refer to <http://unlicense.org/>
 package com.pasviegas.shoushiling.cli.system
 
-import com.pasviegas.shoushiling.cli.GameState
+import com.pasviegas.shoushiling.cli.{GameMode, GameState}
 import com.pasviegas.shoushiling.core.GamePlay.Throw
 
 package object inputs {
@@ -35,9 +35,7 @@ package object inputs {
 
   case class StartGame(state: GameState) extends GameInput
 
-  case class SinglePlayerMode(state: GameState) extends GameInput
-
-  case class MultiPlayerMode(state: GameState) extends GameInput
+  case class SelectPlayerMode(state: GameState, gameMode: GameMode) extends GameInput
 
   case class SelectHomeMoveToThrow(state: GameState, thrown: Throw) extends GameInput
 

@@ -29,11 +29,7 @@ import com.pasviegas.shoushiling.cli.system.stages.{GameStarted, Stage}
 import com.pasviegas.shoushiling.core.GamePlay.{Match, Player, Throw}
 import com.pasviegas.shoushiling.core.engine.{Game, GameOutcome}
 
-sealed trait GameMode
-
-case object SinglePlayer extends GameMode
-
-case object MultiPlayer extends GameMode
+case class GameMode(name: Symbol)
 
 case class PreMatch(homeThrow: Option[Throw] = None, adversaryThrow: Option[Throw] = None) {
 

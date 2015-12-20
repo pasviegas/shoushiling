@@ -22,15 +22,17 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 //
 // For more information, please refer to <http://unlicense.org/>
-package com.pasviegas.shoushiling
+package com.pasviegas.shoushiling.cli
 
-import scala.util.Random
+import com.pasviegas.shoushiling.cli.system.GameSystem
 
-package object cli {
+import scala.util.{Failure, Success}
 
-  val GameSystem = system.GameSystem(new Random)
+case class GameLoop(system: GameSystem, state: GameState) {
 
-  val SinglePlayer = GameMode(name = 'single)
-
-  val MultiPlayer = GameMode(name = 'multi)
+  def next(userInput: Option[String] = None): Option[GameLoop] =
+    state.nextStage.input(state, userInput).map(system(_)).flatMap {
+      case Success(nextState) => Some(GameLoop(system, nextState))
+      case Failure(exception) => Some(GameLoop(system, state))
+    }.orElse(None)
 }
