@@ -24,4 +24,8 @@
 // For more information, please refer to <http://unlicense.org/>
 package com.pasviegas.shoushiling.cli
 
-case class GameState(started: Boolean)
+sealed trait GameMode
+
+case object SinglePlayer extends GameMode
+
+case class GameState(started: Boolean = false, mode: Option[GameMode] = None)

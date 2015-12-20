@@ -24,14 +24,16 @@
 // For more information, please refer to <http://unlicense.org/>
 package com.pasviegas.shoushiling.cli
 
-import com.pasviegas.shoushiling.cli.Inputs.StartGame
+import com.pasviegas.shoushiling.cli.Inputs.{GameInput, SinglePlayerMode, StartGame}
 
 case class GameSystem() {
 
-  def request(input: StartGame): GameState = input match {
+  def request(input: GameInput): GameState = input match {
     case StartGame(state) => startGame(state)
+    case SinglePlayerMode(state) => selectSinglePlayer(state)
   }
 
   private def startGame(state: GameState) = GameState(started = true)
 
+  private def selectSinglePlayer(state: GameState): GameState = state.copy(mode = Some(SinglePlayer))
 }

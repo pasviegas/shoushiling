@@ -26,6 +26,12 @@ package com.pasviegas.shoushiling.cli
 
 object Inputs {
 
-  case class StartGame(state: GameState)
+  sealed trait GameInput {
+    def state: GameState
+  }
+
+  case class StartGame(state: GameState) extends GameInput
+
+  case class SinglePlayerMode(state: GameState) extends GameInput
 
 }
