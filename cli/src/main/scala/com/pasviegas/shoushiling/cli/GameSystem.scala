@@ -87,7 +87,8 @@ case class GameSystem() {
   private def selectAdversaryMoveToThrow(state: GameState, thrown: Throw) =
     Success(state.copy(
       `match` = state.`match`.map(players => players.copy(adversary = players.adversary.copy(throws = thrown))),
-      message = Some(AdversaryPlayerMoveSelectedMessage)
+      message = Some(AdversaryPlayerMoveSelectedMessage),
+      nextStage = PlayTheGame()
     ))
 
   private def play(state: GameState) =

@@ -172,6 +172,18 @@ class GameSystemTest extends FlatSpec with MustMatchers {
       .get.message must be(Some(AdversaryPlayerMoveSelectedMessage))
   }
 
+  "After the adversary player chooses its throw, players " should " play the game" in {
+    val championshipFinale = Match(
+      Player("1", Throw(Move('Paper))),
+      Player("2", Throw(Move('Paper)))
+    )
+
+    val game = GameState(`match` = Some(championshipFinale))
+
+    (GameSystem() request SelectAdversaryMoveToThrow(game, Throw(Move('Rock))))
+      .get.nextStage must be(PlayTheGame())
+  }
+
   "Players" should " be able to play the game and see the outcome" in {
     import com.pasviegas.shoushiling.core._
 
