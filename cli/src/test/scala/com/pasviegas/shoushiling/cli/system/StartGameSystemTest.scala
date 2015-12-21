@@ -36,10 +36,6 @@ import scala.util.Failure
 
 class StartGameSystemTest extends FlatSpec with MustMatchers {
 
-  "A player" must "be able to start the game" in {
-    (StartGameSystem request StartGame(GameState())).get.started must be(true)
-  }
-
   "A player" must "be able to start the game with the default rules" in {
     import com.pasviegas.shoushiling.core._
 
@@ -47,8 +43,7 @@ class StartGameSystemTest extends FlatSpec with MustMatchers {
   }
 
   "When the game starts, the player" should "receive a welcome message" in {
-    (StartGameSystem request StartGame(GameState()))
-      .get.message.get.toString must be(WelcomeMessage.toString)
+    (StartGameSystem request StartGame(GameState())).get.message must be(Some(WelcomeMessage))
   }
 
   "After the game starts, the player" must "choose the game mode" in {

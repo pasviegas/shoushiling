@@ -33,7 +33,7 @@ import com.pasviegas.shoushiling.core.GamePlay.{Match, Player, Throw}
 import com.pasviegas.shoushiling.core.engine.Tie
 import org.scalatest.{FlatSpec, MustMatchers}
 
-import scala.util.Failure
+import scala.util.{Failure, Try}
 
 class PlayGameSystemTest extends FlatSpec with MustMatchers {
 
@@ -124,8 +124,8 @@ class PlayGameSystemTest extends FlatSpec with MustMatchers {
       game = Some(DefaultGame)
     )
 
-    val gameOverState = PlayGameSystem request Play(defaultGame)
-    gameOverState.get.message.get.toString must be(GameOverMessage(gameOverState.get.outcome).toString)
+    val gameOverState: Try[GameState] = PlayGameSystem request Play(defaultGame)
+    gameOverState.get.message must be(Some(GameOverMessage(gameOverState.get.outcome)))
   }
 
 }

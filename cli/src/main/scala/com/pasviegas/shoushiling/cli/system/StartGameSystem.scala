@@ -56,7 +56,6 @@ case object StartGameSystem extends AGameSystem {
 
   private def startDefaultGame(state: GameState) =
     Success(state.copy(
-      started = true,
       message = Some(WelcomeMessage),
       game = Some(DefaultGame),
       nextStage = ChooseGameMode()
@@ -64,7 +63,6 @@ case object StartGameSystem extends AGameSystem {
 
   private def startCustomGame(state: GameState, configFile: String) =
     Success(state.copy(
-      started = true,
       message = Some(WelcomeMessage),
       game = Some(gameFromFile(configFile)),
       nextStage = ChooseGameMode()

@@ -22,28 +22,14 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 //
 // For more information, please refer to <http://unlicense.org/>
-package com.pasviegas.shoushiling.cli
+package com.pasviegas.shoushiling.cli.system.messages
 
-import com.pasviegas.shoushiling.cli.system.messages.Message
-import com.pasviegas.shoushiling.cli.system.stages.{GameStarted, Stage}
-import com.pasviegas.shoushiling.core.GamePlay.{Match, Player, Throw}
-import com.pasviegas.shoushiling.core.engine.{Game, GameOutcome}
+import org.scalatest.{FlatSpec, MustMatchers}
 
-case class GameMode(name: String)
+class MessagesTest extends FlatSpec with MustMatchers {
 
-case class PreMatch(homeThrow: Option[Throw] = None, adversaryThrow: Option[Throw] = None) {
-  def asMatch: Option[Match] = for {
-    player1Throw <- homeThrow
-    player2Throw <- adversaryThrow
-  } yield Match(Player("1", player1Throw), Player("2", player2Throw))
+  "Messages" should "override toString to show the corresponding value to the user" in {
+    new Message("corresponding value").toString must be("corresponding value")
+  }
+
 }
-
-case class GameState(
-  mode: Option[GameMode] = None,
-  preMatch: PreMatch = PreMatch(),
-  `match`: Option[Match] = None,
-  message: Option[Message] = None,
-  game: Option[Game] = None,
-  outcome: Option[GameOutcome] = None,
-  nextStage: Stage = GameStarted()
-)

@@ -29,44 +29,34 @@ import com.pasviegas.shoushiling.core.engine.GameOutcome
 
 package object messages {
 
+  class Message(message: String) {
+    override def toString: String = message
+  }
+
+  case class SinglePlayerSelectedMessage(state: GameState)
+    extends Message(s"You have selected single player, what will be your move? (${moves(state)})")
+
+  case class MultiPlayerSelectedMessage(state: GameState)
+    extends Message(s"You have selected multi player, what will be the first player's move? (${moves(state)})")
+
+  case class HomePlayerMoveSelectedMessage(state: GameState)
+    extends Message(s"What will be the adversary's move? (${moves(state)})")
+
+  case class GameOverMessage(outcome: Option[GameOutcome])
+    extends Message(s"${outcome.get}! Good game! Press enter to exit!")
+
+  case object WelcomeMessage
+    extends Message("Welcome to Shoushiling, please type the game mode: (single, multi)")
+
+  case object SinglePlayerMoveSelectedMessage
+    extends Message("Good choice! Press enter to see the match result!")
+
+  case object AdversaryPlayerMoveSelectedMessage
+    extends Message("Good choice! Press enter to see the match result!")
+
+  case class ExceptionMessage(exception: Throwable)
+    extends Message(exception.getMessage)
+
   private def moves(state: GameState) =
     state.game.get.rules.map(_.winner.name).mkString(", ")
-
-  trait Message
-
-  case class SinglePlayerSelectedMessage(state: GameState) extends Message {
-    override def toString: String =
-      s"You have selected single player, what will be your move? (${moves(state)})"
-  }
-
-  case class MultiPlayerSelectedMessage(state: GameState) extends Message {
-    override def toString: String =
-      s"You have selected multi player, what will be the first player's move? (${moves(state)})"
-  }
-
-  case class HomePlayerMoveSelectedMessage(state: GameState) extends Message {
-    override def toString: String =
-      s"What will be the adversary's move? (${moves(state)})"
-  }
-
-  case class GameOverMessage(outcome: Option[GameOutcome]) extends Message {
-    override def toString: String =
-      s"${outcome.get}! Good game! Press enter to exit!"
-  }
-
-  case object WelcomeMessage extends Message {
-    override def toString: String =
-      "Welcome to Shoushiling, please type the game mode: (single, multi)"
-  }
-
-  case object SinglePlayerMoveSelectedMessage extends Message {
-    override def toString: String =
-      "Good choice! Press enter to see the match result!"
-  }
-
-  case object AdversaryPlayerMoveSelectedMessage extends Message {
-    override def toString: String =
-      "Good choice! Press enter to see the match result!"
-  }
-
 }

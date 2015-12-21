@@ -51,7 +51,7 @@ class SelectPlayerThrowSystemTest extends FlatSpec with MustMatchers {
     val game = GameState(mode = Some(GameMode("single")), game = Some(DefaultGame))
 
     (SelectPlayerThrowSystem(new Random) request SelectHomeMoveToThrow(game, Throw(Rock)))
-      .get.message.get.toString must be(SinglePlayerMoveSelectedMessage.toString)
+      .get.message must be(Some(SinglePlayerMoveSelectedMessage))
   }
 
   "If the home player chooses an unknown move, the game" should "not be played" in {
@@ -68,7 +68,7 @@ class SelectPlayerThrowSystemTest extends FlatSpec with MustMatchers {
     val game = GameState(mode = Some(GameMode("multi")), game = Some(DefaultGame))
 
     (SelectPlayerThrowSystem(new Random) request SelectHomeMoveToThrow(game, Throw(Rock)))
-      .get.message.get.toString must be(HomePlayerMoveSelectedMessage(game).toString)
+      .get.message must be(Some(HomePlayerMoveSelectedMessage(game)))
   }
 
   "If there if no game mode set, the game" should "not be played" in {
@@ -119,7 +119,7 @@ class SelectPlayerThrowSystemTest extends FlatSpec with MustMatchers {
     )
 
     (SelectPlayerThrowSystem(new Random) request SelectAdversaryMoveToThrow(game, Throw(Rock)))
-      .get.message.get.toString must be(AdversaryPlayerMoveSelectedMessage.toString)
+      .get.message must be(Some(AdversaryPlayerMoveSelectedMessage))
   }
 
   "If the home adversary chooses an unknown move, the game" should "not be played" in {

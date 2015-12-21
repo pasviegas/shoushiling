@@ -25,6 +25,7 @@
 package com.pasviegas.shoushiling.cli.system
 
 import com.pasviegas.shoushiling.cli.system.inputs._
+import com.pasviegas.shoushiling.cli.system.messages.WelcomeMessage
 import com.pasviegas.shoushiling.cli.{GameMode, GameState}
 import com.pasviegas.shoushiling.core.GamePlay.{Player, Throw}
 import org.scalatest.{FlatSpec, MustMatchers}
@@ -65,7 +66,7 @@ class GameSystemTest extends FlatSpec with MustMatchers {
   }
 
   "Game system" should "behave as a partial function" in {
-    (GameSystem(new Random) apply StartGame(GameState())).get.started must be(true)
+    (GameSystem(new Random) apply StartGame(GameState())).get.message must be(Some(WelcomeMessage))
   }
 
   "A player" should "be able to play a full multi player game" in {

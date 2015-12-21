@@ -26,18 +26,25 @@ package com.pasviegas.shoushiling.cli.system
 
 package object exceptions {
 
-  case object GameHasNoMatch extends Exception
+  case object GameHasNoMatch
+    extends Exception("No Match was found, can you please try again?")
 
-  case object GameHasNotBeenConfigured extends Exception
+  case object GameHasNotBeenConfigured
+    extends Exception("No Game has been configured, can you please try again?")
 
-  case object NoGameModeSelected extends Exception
+  case object NoGameModeSelected
+    extends Exception("No Game mode selected, can you please try again?")
 
-  case object UnknownGameModeSelected extends Exception
+  case object UnknownGameModeSelected
+    extends Exception("Wrong game mode selected, can you please try again?")
 
-  case object UnknownMoveSelected extends Exception
+  case object UnknownMoveSelected
+    extends Exception("Wrong move selected, can you please try again?")
 
-  case object ConfigFileNotFound extends Exception
+  case object ConfigFileNotFound
+    extends Exception("File not found, can you please try again?")
 
-  case object ConfigFileNotInCorrectFormat extends Exception
+  case object ConfigFileNotInCorrectFormat
+    extends Exception("File not in correct format, can you please try again?")
 
 }

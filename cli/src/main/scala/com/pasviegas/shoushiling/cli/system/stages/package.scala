@@ -60,7 +60,8 @@ package object stages {
   }
 
   case class GameOver() extends Stage {
-    def input(state: GameState, userInput: Option[String]): Option[GameInput] = None
+    def input(state: GameState, userInput: Option[String]): Option[GameInput] =
+      None
   }
 
   private def throwFromUserInput(userInput: Option[String]) =

@@ -25,6 +25,7 @@
 package com.pasviegas.shoushiling.cli
 
 import com.pasviegas.shoushiling.cli.system.GameSystem
+import com.pasviegas.shoushiling.cli.system.messages.ExceptionMessage
 
 import scala.util.control.Breaks._
 import scala.util.{Failure, Random, Success}
@@ -34,7 +35,7 @@ case class GameLoop(system: GameSystem, state: GameState) {
   def next(userInput: Option[String] = None): Option[GameLoop] =
     state.nextStage.input(state, userInput).map(system(_)).flatMap {
       case Success(nextState) => Some(GameLoop(system, nextState))
-      case Failure(exception) => Some(GameLoop(system, state))
+      case Failure(exception) => Some(GameLoop(system, state.copy(message = Some(ExceptionMessage(exception)))))
     }.orElse(None)
 }
 
