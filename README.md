@@ -9,7 +9,7 @@ also mentions this game, calling it shoushiling (手势令), huozhitou (豁指�
 
 ## Play!
 
-Run `sh play.sh `
+Run `sh scritps/play.sh` or `wget https://dl.bintray.com/pasviegas/maven/com/pasviegas/shoushiling_2.11/0.2.0/shoushiling_2.11-0.2.0-runnable.jar && java -jar shoushiling_2.11-0.2.0-runnable.jar` 
 
 ## Development
 

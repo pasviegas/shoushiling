@@ -15,22 +15,36 @@ lazy val cli = (project in file("cli"))
   .settings(subProjectSettings)
   .dependsOn(core)
 
-lazy val parentSettings = buildSettings ++ packageSettings
+lazy val parentSettings = buildSettings ++ packageSettings ++ publishSettings
 
 lazy val subProjectSettings =
-  buildSettings ++ baseSettings ++ codeQualitySettings ++ scalariformSettings
+  buildSettings ++ baseSettings ++ codeQualitySettings ++ scalariformSettings ++ noPublish
+
+val projectVersion = "0.2.0"
 
 lazy val buildSettings = Seq(
-  version := "1.0",
+  version := projectVersion,
   organization := "com.pasviegas",
   scalaVersion := "2.11.7"
 )
 
 lazy val packageSettings = Seq(
   mainClass in assembly := Some("com.pasviegas.shoushiling.cli.Main"),
-  assemblyJarName in assembly := "shoushiling.jar",
+  assemblyJarName in assembly := s"shoushiling_2.11-$projectVersion-runnable.jar",
   test in assembly := {}
 )
+
+lazy val publishSettings = Seq(
+  licenses +=("Unlicense", url("http://unlicense.org/")),
+  publishMavenStyle := true
+) ++ addArtifact(Artifact("shoushiling", "jar", "jar", "runnable"), assembly).settings
+
+lazy val noPublish = Seq(
+  publish := {},
+  publishLocal := {},
+  publishArtifact := false
+)
+
 
 lazy val baseSettings = Seq(
   libraryDependencies ++= Seq(
