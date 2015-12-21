@@ -26,7 +26,7 @@ package com.pasviegas.shoushiling.cli.system
 
 import com.pasviegas.shoushiling.cli.system.inputs._
 import com.pasviegas.shoushiling.cli.{GameMode, GameState}
-import com.pasviegas.shoushiling.core.GamePlay.{Move, Player, Throw}
+import com.pasviegas.shoushiling.core.GamePlay.{Player, Throw}
 import org.scalatest.{FlatSpec, MustMatchers}
 
 import scala.util.{Random, Try}
@@ -38,25 +38,25 @@ class GameSystemTest extends FlatSpec with MustMatchers {
   }
 
   "Game system" should "respond to SinglePlayerMode input" in {
-    (GameSystem(new Random).request isDefinedAt SelectPlayerMode(GameState(), GameMode('single))) must be(true)
+    (GameSystem(new Random).request isDefinedAt SelectPlayerMode(GameState(), GameMode("single"))) must be(true)
   }
 
   "Game system" should "respond to MultiPlayerMode input" in {
-    (GameSystem(new Random).request isDefinedAt SelectPlayerMode(GameState(), GameMode('multi))) must be(true)
+    (GameSystem(new Random).request isDefinedAt SelectPlayerMode(GameState(), GameMode("multi"))) must be(true)
   }
 
   "Game system" should "respond to SelectHomeMoveToThrow input" in {
-    import com.pasviegas.shoushiling.core.DefaultGame
+    import com.pasviegas.shoushiling.core._
 
     val game = GameState(game = Some(DefaultGame))
-    (GameSystem(new Random).request isDefinedAt SelectHomeMoveToThrow(game, Throw(Move('Rock)))) must be(true)
+    (GameSystem(new Random).request isDefinedAt SelectHomeMoveToThrow(game, Throw(Rock))) must be(true)
   }
 
   "Game system" should "respond to SelectAdversaryMoveToThrow input" in {
-    import com.pasviegas.shoushiling.core.DefaultGame
+    import com.pasviegas.shoushiling.core._
 
     val game = GameState(game = Some(DefaultGame))
-    val moveToThrow: SelectAdversaryMoveToThrow = SelectAdversaryMoveToThrow(game, Throw(Move('Rock)))
+    val moveToThrow: SelectAdversaryMoveToThrow = SelectAdversaryMoveToThrow(game, Throw(Rock))
     (GameSystem(new Random).request isDefinedAt moveToThrow) must be(true)
   }
 
@@ -74,7 +74,7 @@ class GameSystemTest extends FlatSpec with MustMatchers {
     val gameSystem: GameSystem = GameSystem(new Random)
     val finalGame: Try[GameState] = for {
       gameStarted <- gameSystem request StartGame(GameState())
-      modeChosen <- gameSystem request SelectPlayerMode(gameStarted, GameMode('multi))
+      modeChosen <- gameSystem request SelectPlayerMode(gameStarted, GameMode("multi"))
       homeThrowChosen <- gameSystem request SelectHomeMoveToThrow(modeChosen, Throw(Rock))
       throwsChosen <- gameSystem request SelectAdversaryMoveToThrow(homeThrowChosen, Throw(Scissors))
       gamePlayed <- gameSystem request Play(throwsChosen)
@@ -89,7 +89,7 @@ class GameSystemTest extends FlatSpec with MustMatchers {
     val gameSystem: GameSystem = GameSystem(new Random)
     val finalGame: Try[GameState] = for {
       gameStarted <- gameSystem request StartGame(GameState())
-      modeChosen <- gameSystem request SelectPlayerMode(gameStarted, GameMode('single))
+      modeChosen <- gameSystem request SelectPlayerMode(gameStarted, GameMode("single"))
       throwsChosen <- gameSystem request SelectHomeMoveToThrow(modeChosen, Throw(Rock))
       gamePlayed <- gameSystem request Play(throwsChosen)
     } yield gamePlayed

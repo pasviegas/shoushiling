@@ -36,4 +36,8 @@ package object exceptions {
 
   case object UnknownMoveSelected extends Exception
 
+  case object ConfigFileNotFound extends Exception
+
+  case object ConfigFileNotInCorrectFormat extends Exception
+
 }

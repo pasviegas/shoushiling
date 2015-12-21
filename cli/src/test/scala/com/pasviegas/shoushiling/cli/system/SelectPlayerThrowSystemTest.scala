@@ -25,7 +25,7 @@
 package com.pasviegas.shoushiling.cli.system
 
 import com.pasviegas.shoushiling.cli._
-import com.pasviegas.shoushiling.cli.system.exceptions.{NoGameModeSelected, UnknownGameModeSelected, UnknownMoveSelected}
+import com.pasviegas.shoushiling.cli.system.exceptions._
 import com.pasviegas.shoushiling.cli.system.inputs.{SelectAdversaryMoveToThrow, SelectHomeMoveToThrow}
 import com.pasviegas.shoushiling.cli.system.messages._
 import com.pasviegas.shoushiling.cli.system.stages.{AdversaryPlayerChooseMoveToThrow, PlayTheGame}
@@ -37,124 +37,124 @@ import scala.util.{Failure, Random}
 class SelectPlayerThrowSystemTest extends FlatSpec with MustMatchers {
 
   "The home player" must "be able to choose which move to throw" in {
-    import com.pasviegas.shoushiling.core.DefaultGame
+    import com.pasviegas.shoushiling.core._
 
-    val game = GameState(mode = Some(GameMode('single)), game = Some(DefaultGame))
+    val game = GameState(mode = Some(GameMode("single")), game = Some(DefaultGame))
 
-    (SelectPlayerThrowSystem(new Random) request SelectHomeMoveToThrow(game, Throw(Move('Rock))))
-      .get.`match`.get.home.throws must be(Throw(Move('Rock)))
+    (SelectPlayerThrowSystem(new Random) request SelectHomeMoveToThrow(game, Throw(Rock)))
+      .get.`match`.get.home.throws must be(Throw(Rock))
   }
 
   "When the home player selects its throw, he" should "receive a feedback message" in {
-    import com.pasviegas.shoushiling.core.DefaultGame
+    import com.pasviegas.shoushiling.core._
 
-    val game = GameState(mode = Some(GameMode('single)), game = Some(DefaultGame))
+    val game = GameState(mode = Some(GameMode("single")), game = Some(DefaultGame))
 
-    (SelectPlayerThrowSystem(new Random) request SelectHomeMoveToThrow(game, Throw(Move('Rock))))
+    (SelectPlayerThrowSystem(new Random) request SelectHomeMoveToThrow(game, Throw(Rock)))
       .get.message.get.toString must be(SinglePlayerMoveSelectedMessage.toString)
   }
 
   "If the home player chooses an unknown move, the game" should "not be played" in {
     import com.pasviegas.shoushiling.core.DefaultGame
 
-    val game = GameState(mode = Some(GameMode('single)), game = Some(DefaultGame))
-    val toThrow = SelectHomeMoveToThrow(game, Throw(Move('Brock)))
+    val game = GameState(mode = Some(GameMode("single")), game = Some(DefaultGame))
+    val toThrow = SelectHomeMoveToThrow(game, Throw(Move("Brock")))
     (SelectPlayerThrowSystem(new Random) request toThrow) must be(Failure(UnknownMoveSelected))
   }
 
   "When the game is multi player the home player" should "receive a different feedback message" in {
-    import com.pasviegas.shoushiling.core.DefaultGame
+    import com.pasviegas.shoushiling.core._
 
-    val game = GameState(mode = Some(GameMode('multi)), game = Some(DefaultGame))
+    val game = GameState(mode = Some(GameMode("multi")), game = Some(DefaultGame))
 
-    (SelectPlayerThrowSystem(new Random) request SelectHomeMoveToThrow(game, Throw(Move('Rock))))
+    (SelectPlayerThrowSystem(new Random) request SelectHomeMoveToThrow(game, Throw(Rock)))
       .get.message.get.toString must be(HomePlayerMoveSelectedMessage(game).toString)
   }
 
   "If there if no game mode set, the game" should "not be played" in {
-    import com.pasviegas.shoushiling.core.DefaultGame
+    import com.pasviegas.shoushiling.core._
 
     val game = GameState(game = Some(DefaultGame))
-    val moveToThrow = SelectHomeMoveToThrow(game, Throw(Move('Rock)))
+    val moveToThrow = SelectHomeMoveToThrow(game, Throw(Rock))
 
     (SelectPlayerThrowSystem(new Random) request moveToThrow) must be(Failure(NoGameModeSelected))
   }
 
   "After the home player chooses its throw and game mode is single player, it" should "play the game" in {
-    import com.pasviegas.shoushiling.core.DefaultGame
+    import com.pasviegas.shoushiling.core._
 
-    val game = GameState(mode = Some(GameMode('single)), game = Some(DefaultGame))
+    val game = GameState(mode = Some(GameMode("single")), game = Some(DefaultGame))
 
-    (SelectPlayerThrowSystem(new Random) request SelectHomeMoveToThrow(game, Throw(Move('Rock))))
+    (SelectPlayerThrowSystem(new Random) request SelectHomeMoveToThrow(game, Throw(Rock)))
       .get.nextStage must be(PlayTheGame())
   }
 
   "After the home player chooses its throw and game mode is multi player, it" should "wait for the next player" in {
-    import com.pasviegas.shoushiling.core.DefaultGame
+    import com.pasviegas.shoushiling.core._
 
-    val game = GameState(mode = Some(GameMode('multi)), game = Some(DefaultGame))
+    val game = GameState(mode = Some(GameMode("multi")), game = Some(DefaultGame))
 
-    (SelectPlayerThrowSystem(new Random) request SelectHomeMoveToThrow(game, Throw(Move('Rock))))
+    (SelectPlayerThrowSystem(new Random) request SelectHomeMoveToThrow(game, Throw(Rock)))
       .get.nextStage must be(AdversaryPlayerChooseMoveToThrow())
   }
 
   "The adversary player " must "be able to choose which move to throw" in {
-    import com.pasviegas.shoushiling.core.DefaultGame
+    import com.pasviegas.shoushiling.core._
 
     val game = GameState(
       game = Some(DefaultGame),
-      preMatch = PreMatch(homeThrow = Some(Throw(Move('Paper))))
+      preMatch = PreMatch(homeThrow = Some(Throw(Paper)))
     )
 
-    (SelectPlayerThrowSystem(new Random) request SelectAdversaryMoveToThrow(game, Throw(Move('Rock))))
-      .get.`match`.get.adversary.throws must be(Throw(Move('Rock)))
+    (SelectPlayerThrowSystem(new Random) request SelectAdversaryMoveToThrow(game, Throw(Rock)))
+      .get.`match`.get.adversary.throws must be(Throw(Rock))
   }
 
   "When the adversary player selects its throw, he" should "receive a feedback message" in {
-    import com.pasviegas.shoushiling.core.DefaultGame
+    import com.pasviegas.shoushiling.core._
 
     val game = GameState(
       game = Some(DefaultGame),
-      preMatch = PreMatch(homeThrow = Some(Throw(Move('Paper))))
+      preMatch = PreMatch(homeThrow = Some(Throw(Paper)))
     )
 
-    (SelectPlayerThrowSystem(new Random) request SelectAdversaryMoveToThrow(game, Throw(Move('Rock))))
+    (SelectPlayerThrowSystem(new Random) request SelectAdversaryMoveToThrow(game, Throw(Rock)))
       .get.message.get.toString must be(AdversaryPlayerMoveSelectedMessage.toString)
   }
 
   "If the home adversary chooses an unknown move, the game" should "not be played" in {
-    import com.pasviegas.shoushiling.core.DefaultGame
+    import com.pasviegas.shoushiling.core._
 
     val game = GameState(
       game = Some(DefaultGame),
-      preMatch = PreMatch(homeThrow = Some(Throw(Move('Paper))))
+      preMatch = PreMatch(homeThrow = Some(Throw(Paper)))
     )
 
-    val toThrow = SelectAdversaryMoveToThrow(game, Throw(Move('Brock)))
+    val toThrow = SelectAdversaryMoveToThrow(game, Throw(Move("Brock")))
     (SelectPlayerThrowSystem(new Random) request toThrow) must be(Failure(UnknownMoveSelected))
   }
 
   "After the adversary player chooses its throw, players " should "play the game" in {
-    import com.pasviegas.shoushiling.core.DefaultGame
+    import com.pasviegas.shoushiling.core._
 
     val game = GameState(
       game = Some(DefaultGame),
-      preMatch = PreMatch(homeThrow = Some(Throw(Move('Paper))))
+      preMatch = PreMatch(homeThrow = Some(Throw(Paper)))
     )
 
-    (SelectPlayerThrowSystem(new Random) request SelectAdversaryMoveToThrow(game, Throw(Move('Rock))))
+    (SelectPlayerThrowSystem(new Random) request SelectAdversaryMoveToThrow(game, Throw(Rock)))
       .get.nextStage must be(PlayTheGame())
   }
 
   "When the user selects an unknown game mode, it" should "not be able to play it" in {
-    import com.pasviegas.shoushiling.core.DefaultGame
+    import com.pasviegas.shoushiling.core._
 
     val game = GameState(
       game = Some(DefaultGame),
-      preMatch = PreMatch(homeThrow = Some(Throw(Move('Paper)))),
-      mode = Some(GameMode('MMORPG))
+      preMatch = PreMatch(homeThrow = Some(Throw(Paper))),
+      mode = Some(GameMode("MMORPG"))
     )
-    val moveToThrow = SelectHomeMoveToThrow(game, Throw(Move('Rock)))
+    val moveToThrow = SelectHomeMoveToThrow(game, Throw(Rock))
     (SelectPlayerThrowSystem(new Random) request moveToThrow) must be(Failure(UnknownGameModeSelected))
   }
 }

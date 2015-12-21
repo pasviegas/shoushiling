@@ -29,7 +29,7 @@ import com.pasviegas.shoushiling.cli.system.stages.{GameStarted, Stage}
 import com.pasviegas.shoushiling.core.GamePlay.{Match, Player, Throw}
 import com.pasviegas.shoushiling.core.engine.{Game, GameOutcome}
 
-case class GameMode(name: Symbol)
+case class GameMode(name: String)
 
 case class PreMatch(homeThrow: Option[Throw] = None, adversaryThrow: Option[Throw] = None) {
   def asMatch: Option[Match] = for {

@@ -28,6 +28,6 @@ import scala.io.StdIn
 
 object Main extends App {
 
-  GameLoop.start(_.state.message.foreach(println), () => Some(StdIn.readLine()))
+  GameLoop.start(args, _.state.message.foreach(println), () => Some(StdIn.readLine()))
 
 }

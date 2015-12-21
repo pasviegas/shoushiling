@@ -41,10 +41,13 @@ case class GameLoop(system: GameSystem, state: GameState) {
 object GameLoop {
 
   def start(printState: (GameLoop) => Unit, readInput: () => Option[String]): Unit =
-    iterate(gameStart, printState, readInput)
+    iterate(gameStart(Array()), printState, readInput)
 
-  private def gameStart: Option[GameLoop] =
-    GameLoop(GameSystem(new Random), GameState()).next()
+  def start(args: Array[String], printState: (GameLoop) => Unit, readInput: () => Option[String]): Unit =
+    iterate(gameStart(args), printState, readInput)
+
+  private def gameStart(args: Array[String]): Option[GameLoop] =
+    GameLoop(GameSystem(new Random), GameState()).next(args.headOption)
 
   private def iterate(gameStart: Option[GameLoop], printState: (GameLoop) => Unit, readInput: () => Option[String]) =
     breakable {

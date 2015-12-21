@@ -33,7 +33,7 @@ package object inputs {
     def state: GameState
   }
 
-  case class StartGame(state: GameState) extends GameInput
+  case class StartGame(state: GameState, configFile: Option[String] = None) extends GameInput
 
   case class SelectPlayerMode(state: GameState, gameMode: GameMode) extends GameInput
 

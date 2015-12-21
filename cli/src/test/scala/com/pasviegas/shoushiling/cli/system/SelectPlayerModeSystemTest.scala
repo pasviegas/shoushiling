@@ -36,41 +36,41 @@ import scala.util.Failure
 class SelectPlayerModeSystemTest extends FlatSpec with MustMatchers {
 
   "A player" must "be able to choose to play alone" in {
-    (SelectPlayerModeSystem request SelectPlayerMode(GameState(), GameMode('single)))
-      .get.mode must be(Some(GameMode('single)))
+    (SelectPlayerModeSystem request SelectPlayerMode(GameState(), GameMode("single")))
+      .get.mode must be(Some(GameMode("single")))
   }
 
   "When the player selects single player, he" should "receive a feedback message" in {
     import com.pasviegas.shoushiling.core._
     val state = GameState(game = Some(DefaultGame))
-    (SelectPlayerModeSystem request SelectPlayerMode(state, GameMode('single)))
+    (SelectPlayerModeSystem request SelectPlayerMode(state, GameMode("single")))
       .get.message.get.toString must be(SinglePlayerSelectedMessage(state).toString)
   }
 
   "After the player chooses single player" must "choose its move" in {
-    (SelectPlayerModeSystem request SelectPlayerMode(GameState(), GameMode('single)))
+    (SelectPlayerModeSystem request SelectPlayerMode(GameState(), GameMode("single")))
       .get.nextStage must be(HomePlayerChooseMoveToThrow())
   }
 
   "A player" must "be able to choose to play with another player" in {
-    (SelectPlayerModeSystem request SelectPlayerMode(GameState(), GameMode('multi)))
-      .get.mode must be(Some(GameMode('multi)))
+    (SelectPlayerModeSystem request SelectPlayerMode(GameState(), GameMode("multi")))
+      .get.mode must be(Some(GameMode("multi")))
   }
 
   "When the player selects multi player, he" should "receive a feedback message" in {
     import com.pasviegas.shoushiling.core._
     val state = GameState(game = Some(DefaultGame))
-    (SelectPlayerModeSystem request SelectPlayerMode(state, GameMode('multi)))
+    (SelectPlayerModeSystem request SelectPlayerMode(state, GameMode("multi")))
       .get.message.get.toString must be(MultiPlayerSelectedMessage(state).toString)
   }
 
   "After the player chooses multi player" must "choose its move" in {
-    (SelectPlayerModeSystem request SelectPlayerMode(GameState(), GameMode('multi)))
+    (SelectPlayerModeSystem request SelectPlayerMode(GameState(), GameMode("multi")))
       .get.nextStage must be(HomePlayerChooseMoveToThrow())
   }
 
   "When the user selects an unknown game mode, it" should "not be able to play it" in {
-    val mmorpgGameMode: SelectPlayerMode = SelectPlayerMode(GameState(), GameMode('MMORPG))
+    val mmorpgGameMode: SelectPlayerMode = SelectPlayerMode(GameState(), GameMode("MMORPG"))
     (SelectPlayerModeSystem request mmorpgGameMode) must be(Failure(UnknownGameModeSelected))
   }
 }

@@ -83,8 +83,8 @@ class BalancedGameTest extends FlatSpec with MustMatchers {
   }
 
   "In a particular Game " should "be easily extensible to play new moves" in {
-    val Lizard = Move('Lizard)
-    val Spock = Move('Spock)
+    val Lizard = Move("Lizard")
+    val Spock = Move("Spock")
 
     val customGame = BalancedGame(Set(
       GameRule(Scissors -> "cuts" -> Paper),

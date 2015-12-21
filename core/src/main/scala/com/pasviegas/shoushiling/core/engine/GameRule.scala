@@ -24,9 +24,13 @@
 // For more information, please refer to <http://unlicense.org/>
 package com.pasviegas.shoushiling.core.engine
 
-import com.pasviegas.shoushiling.core.GamePlay.Move
+import com.pasviegas.shoushiling.core.GamePlay.{Match, Move}
 
-case class GameRule(winner: Move, action: String, loser: Move)
+case class GameRule(winner: Move, action: String, loser: Move) {
+  def matchesWith(`match`: Match): Boolean =
+    (winner == `match`.home.throws.move) &&
+      (loser == `match`.adversary.throws.move)
+}
 
 object GameRule {
   def apply(rule: ((Move, String), Move)): GameRule = GameRule(rule._1._1, rule._1._2, rule._2)

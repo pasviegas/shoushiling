@@ -17,7 +17,7 @@ Run `activator ~test`
 
 ## Deployment
 
-Just push to github, be aware that you have to bump the version in order to do so.
+Just push to master, be aware that you have to bump the version in order to do so.
 
 Don't forget to change scripts/play.sh to the new version before pushing (or be a better person and have a commit hook :P)
 

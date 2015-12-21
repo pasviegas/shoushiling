@@ -43,8 +43,8 @@ case class SelectPlayerThrowSystem(seed: Random) extends AGameSystem {
     case SelectAdversaryMoveToThrow(state, Throw(Move(move))) if checkUnknown(move, state.game) =>
       Failure(UnknownMoveSelected)
     case SelectHomeMoveToThrow(state, thrown) => state.mode match {
-      case Some(GameMode('single)) => selectSinglePlayerHome(state, thrown)
-      case Some(GameMode('multi)) => selectMultiPlayerHome(state, thrown)
+      case Some(GameMode("single")) => selectSinglePlayerHome(state, thrown)
+      case Some(GameMode("multi")) => selectMultiPlayerHome(state, thrown)
       case Some(_) => Failure(UnknownGameModeSelected)
       case None => Failure(NoGameModeSelected)
     }
@@ -52,7 +52,7 @@ case class SelectPlayerThrowSystem(seed: Random) extends AGameSystem {
       selectAdversaryMoveToThrow(state, thrown)
   }
 
-  private def checkUnknown(move: Symbol, game: Option[Game]) =
+  private def checkUnknown(move: String, game: Option[Game]) =
     !game.get.rules.exists(_.winner.name == move)
 
   private def selectSinglePlayerHome(state: GameState, thrown: Throw) =

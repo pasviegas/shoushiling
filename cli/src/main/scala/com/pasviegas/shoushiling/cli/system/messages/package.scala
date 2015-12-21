@@ -30,7 +30,7 @@ import com.pasviegas.shoushiling.core.engine.GameOutcome
 package object messages {
 
   private def moves(state: GameState) =
-    state.game.get.rules.map(_.winner.name.name).mkString(", ")
+    state.game.get.rules.map(_.winner.name).mkString(", ")
 
   trait Message
 
@@ -56,7 +56,7 @@ package object messages {
 
   case object WelcomeMessage extends Message {
     override def toString: String =
-      "Welcome to Shoushiling, please type the game mode: (Single, Multi)"
+      "Welcome to Shoushiling, please type the game mode: (single, multi)"
   }
 
   case object SinglePlayerMoveSelectedMessage extends Message {

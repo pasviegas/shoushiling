@@ -25,10 +25,14 @@
 package com.pasviegas.shoushiling.cli.system
 
 import com.pasviegas.shoushiling.cli.GameState
+import com.pasviegas.shoushiling.cli.system.exceptions.{ConfigFileNotFound, ConfigFileNotInCorrectFormat}
 import com.pasviegas.shoushiling.cli.system.inputs.StartGame
 import com.pasviegas.shoushiling.cli.system.messages.WelcomeMessage
 import com.pasviegas.shoushiling.cli.system.stages.ChooseGameMode
+import com.pasviegas.shoushiling.core.GamePlay.Move
 import org.scalatest.{FlatSpec, MustMatchers}
+
+import scala.util.Failure
 
 class StartGameSystemTest extends FlatSpec with MustMatchers {
 
@@ -51,5 +55,19 @@ class StartGameSystemTest extends FlatSpec with MustMatchers {
     (StartGameSystem request StartGame(GameState())).get.nextStage must be(ChooseGameMode())
   }
 
+  "A player" can "start a custom the game" in {
+    val correct = Some(getClass.getResource("/correct.game").getPath)
+    (StartGameSystem request StartGame(GameState(), correct))
+      .get.game.get.rules.find(_.winner == Move("Lizard")) mustBe defined
+  }
+
+  "A player" can "not start a game if the config file is not found" in {
+    (StartGameSystem request StartGame(GameState(), Some("notFound.game"))) must be(Failure(ConfigFileNotFound))
+  }
+
+  "A player" can "not start a game if the config file is incorrectly configured" in {
+    val wrongFile = Some(getClass.getResource("/wrong.game").getPath)
+    (StartGameSystem request StartGame(GameState(), wrongFile)) must be(Failure(ConfigFileNotInCorrectFormat))
+  }
 }
 

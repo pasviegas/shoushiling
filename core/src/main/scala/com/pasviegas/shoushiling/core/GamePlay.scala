@@ -26,7 +26,7 @@ package com.pasviegas.shoushiling.core
 
 object GamePlay {
 
-  case class Move(name: Symbol)
+  case class Move(name: String)
 
   case class Throw(move: Move)
 

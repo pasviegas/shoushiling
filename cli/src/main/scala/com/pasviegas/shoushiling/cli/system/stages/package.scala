@@ -36,12 +36,12 @@ package object stages {
 
   case class GameStarted() extends Stage {
     def input(state: GameState, userInput: Option[String]): Option[GameInput] =
-      Some(StartGame(state))
+      Some(StartGame(state, userInput))
   }
 
   case class ChooseGameMode() extends Stage {
     def input(state: GameState, userInput: Option[String]): Option[GameInput] =
-      Some(SelectPlayerMode(state, gameModeFromUserInput(userInput)))
+      Some(SelectPlayerMode(state, GameMode(userInput.get)))
   }
 
   case class HomePlayerChooseMoveToThrow() extends Stage {
@@ -64,9 +64,6 @@ package object stages {
   }
 
   private def throwFromUserInput(userInput: Option[String]) =
-    Throw(Move(Symbol(userInput.get)))
-
-  private def gameModeFromUserInput(userInput: Option[String]) =
-    GameMode(Symbol(userInput.get.toLowerCase()))
+    Throw(Move(userInput.get))
 
 }

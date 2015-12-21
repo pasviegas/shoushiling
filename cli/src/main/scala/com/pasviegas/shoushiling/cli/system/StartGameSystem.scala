@@ -24,21 +24,37 @@
 // For more information, please refer to <http://unlicense.org/>
 package com.pasviegas.shoushiling.cli.system
 
+import java.nio.file.{Files, Paths}
+
 import com.pasviegas.shoushiling.cli.GameState
+import com.pasviegas.shoushiling.cli.system.exceptions.{ConfigFileNotFound, ConfigFileNotInCorrectFormat}
 import com.pasviegas.shoushiling.cli.system.inputs.{GameInput, StartGame}
 import com.pasviegas.shoushiling.cli.system.messages.WelcomeMessage
 import com.pasviegas.shoushiling.cli.system.stages.ChooseGameMode
+import com.pasviegas.shoushiling.core.GamePlay.Move
 import com.pasviegas.shoushiling.core._
+import com.pasviegas.shoushiling.core.engine.{GameRule, BalancedGame}
 
-import scala.util.{Success, Try}
+import scala.util.{Failure, Success, Try}
 
 case object StartGameSystem extends AGameSystem {
 
   def request: PartialFunction[GameInput, Try[GameState]] = {
-    case StartGame(state) => startGame(state)
+    case StartGame(state, Some(configFile)) =>
+      configFile match {
+        case file: String if notExists(file) => Failure(ConfigFileNotFound)
+        case file: String if notParsable(file) => Failure(ConfigFileNotInCorrectFormat)
+        case file: String => startCustomGame(state, file)
+      }
+    case StartGame(state, None) => startDefaultGame(state)
   }
 
-  private def startGame(state: GameState) =
+  private def notExists(file: String) = !Files.exists(Paths.get(file))
+
+  private def notParsable(file: String) =
+    !unParsedRulesFromFile(file).forall(_.length == 3)
+
+  private def startDefaultGame(state: GameState) =
     Success(state.copy(
       started = true,
       message = Some(WelcomeMessage),
@@ -46,4 +62,27 @@ case object StartGameSystem extends AGameSystem {
       nextStage = ChooseGameMode()
     ))
 
+  private def startCustomGame(state: GameState, configFile: String) =
+    Success(state.copy(
+      started = true,
+      message = Some(WelcomeMessage),
+      game = Some(gameFromFile(configFile)),
+      nextStage = ChooseGameMode()
+    ))
+
+  private def gameFromFile(configFile: String) =
+    BalancedGame(configToRuleSet(configFile))
+
+  private def configToRuleSet(configFile: String) =
+    unParsedRulesFromFile(configFile)
+      .foldLeft(Set[GameRule]())(toRuleSet)
+
+  private def toRuleSet: (Set[GameRule], Array[String]) => Set[GameRule] =
+    (ruleSet, ruleParts) =>
+      ruleSet + GameRule(Move(ruleParts(0)) -> ruleParts(1) -> Move(ruleParts(2)))
+
+  private def unParsedRulesFromFile(configFile: String) =
+    io.Source.fromFile(configFile)
+      .getLines()
+      .map(_.trim.split(" "))
 }

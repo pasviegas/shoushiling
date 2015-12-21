@@ -78,4 +78,18 @@ class GameLoopTest extends FlatSpec with MustMatchers {
 
     inputs must be(Nil)
   }
+
+  "A custom Game" should "start and go through all stages until reaching the end" in {
+    var inputs = List("single", "Lizard")
+
+    val args: Array[String] = Array(getClass.getResource("/correct.game").getPath)
+    GameLoop.start(args, (lopp) => {}, () => inputs match {
+      case head :: tail =>
+        inputs = tail
+        Some(head)
+      case Nil => None
+    })
+
+    inputs must be(Nil)
+  }
 }

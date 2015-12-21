@@ -40,5 +40,5 @@ final case class Tie(`match`: Match) extends GameOutcome {
 
 final case class Win(`match`: Match, winner: Some[Player]) extends GameOutcome {
   override def toString: String =
-    s"Player ${winner.get.name} wins with ${winner.get.throws.move.name.name}"
+    s"Player ${winner.get.name} wins with ${winner.get.throws.move.name}"
 }

@@ -28,9 +28,9 @@ import com.pasviegas.shoushiling.core.engine.{BalancedGame, GameRule}
 
 package object core {
 
-  val Rock = GamePlay.Move('Rock)
-  val Paper = GamePlay.Move('Paper)
-  val Scissors = GamePlay.Move('Scissors)
+  val Rock = GamePlay.Move("Rock")
+  val Paper = GamePlay.Move("Paper")
+  val Scissors = GamePlay.Move("Scissors")
 
   val DefaultGame = BalancedGame(Set(
     GameRule(Rock -> "crushes" -> Scissors),

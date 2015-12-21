@@ -35,21 +35,21 @@ import scala.util.{Failure, Success, Try}
 case object SelectPlayerModeSystem extends AGameSystem {
 
   def request: PartialFunction[GameInput, Try[GameState]] = {
-    case SelectPlayerMode(state, GameMode('single)) => selectSinglePlayer(state)
-    case SelectPlayerMode(state, GameMode('multi)) => selectMultiPlayer(state)
+    case SelectPlayerMode(state, GameMode("single")) => selectSinglePlayer(state)
+    case SelectPlayerMode(state, GameMode("multi")) => selectMultiPlayer(state)
     case SelectPlayerMode(state, GameMode(_)) => Failure(UnknownGameModeSelected)
   }
 
   private def selectSinglePlayer(state: GameState) =
     Success(state.copy(
-      mode = Some(GameMode('single)),
+      mode = Some(GameMode("single")),
       message = Some(SinglePlayerSelectedMessage(state)),
       nextStage = HomePlayerChooseMoveToThrow()
     ))
 
   private def selectMultiPlayer(state: GameState) =
     Success(state.copy(
-      mode = Some(GameMode('multi)),
+      mode = Some(GameMode("multi")),
       message = Some(MultiPlayerSelectedMessage(state)),
       nextStage = HomePlayerChooseMoveToThrow()
     ))

@@ -29,7 +29,7 @@ import com.pasviegas.shoushiling.cli.system.exceptions.{GameHasNoMatch, GameHasN
 import com.pasviegas.shoushiling.cli.system.inputs.Play
 import com.pasviegas.shoushiling.cli.system.messages.GameOverMessage
 import com.pasviegas.shoushiling.cli.system.stages.GameOver
-import com.pasviegas.shoushiling.core.GamePlay.{Match, Move, Player, Throw}
+import com.pasviegas.shoushiling.core.GamePlay.{Match, Player, Throw}
 import com.pasviegas.shoushiling.core.engine.Tie
 import org.scalatest.{FlatSpec, MustMatchers}
 
@@ -41,8 +41,8 @@ class PlayGameSystemTest extends FlatSpec with MustMatchers {
     import com.pasviegas.shoushiling.core._
 
     val championshipFinale = Match(
-      Player("1", Throw(Move('Paper))),
-      Player("2", Throw(Move('Paper)))
+      Player("1", Throw(Paper)),
+      Player("2", Throw(Paper))
     )
 
     val defaultGame = GameState(
@@ -62,10 +62,11 @@ class PlayGameSystemTest extends FlatSpec with MustMatchers {
   }
 
   "If there if no game rules are set, the game" should "not be played" in {
+    import com.pasviegas.shoushiling.core._
 
     val championshipFinale = Match(
-      Player("1", Throw(Move('Paper))),
-      Player("2", Throw(Move('Paper)))
+      Player("1", Throw(Paper)),
+      Player("2", Throw(Paper))
     )
 
     val stateWithNoMatch = GameState(`match` = Some(championshipFinale))
@@ -81,8 +82,8 @@ class PlayGameSystemTest extends FlatSpec with MustMatchers {
     import com.pasviegas.shoushiling.core._
 
     val championshipFinale = Match(
-      Player("1", Throw(Move('Paper))),
-      Player("2", Throw(Move('Paper)))
+      Player("1", Throw(Paper)),
+      Player("2", Throw(Paper))
     )
 
     val defaultGame = GameState(
@@ -98,8 +99,8 @@ class PlayGameSystemTest extends FlatSpec with MustMatchers {
     import com.pasviegas.shoushiling.core._
 
     val championshipFinale = Match(
-      Player("1", Throw(Move('Paper))),
-      Player("2", Throw(Move('Paper)))
+      Player("1", Throw(Paper)),
+      Player("2", Throw(Paper))
     )
 
     val defaultGame = GameState(
@@ -114,8 +115,8 @@ class PlayGameSystemTest extends FlatSpec with MustMatchers {
     import com.pasviegas.shoushiling.core._
 
     val championshipFinale = Match(
-      Player("1", Throw(Move('Paper))),
-      Player("2", Throw(Move('Paper)))
+      Player("1", Throw(Paper)),
+      Player("2", Throw(Paper))
     )
 
     val defaultGame = GameState(

@@ -39,13 +39,8 @@ class BalancedGame(val rules: Set[GameRule]) extends Game {
     Win(`match`, Some(`match`.adversary))
 
   private def findIfHomeIsWinner(`match`: Match) =
-    rules.find(winningRule(`match`))
+    rules.find(_.matchesWith(`match`))
       .map(rule => Win(`match`, Some(`match`.home)))
-
-  private def winningRule(`match`: Match) =
-    (rule: GameRule) =>
-      (rule.winner == `match`.home.throws.move) &&
-        (rule.loser == `match`.adversary.throws.move)
 
   private def findIfTie(`match`: Match) =
     condOpt(`match`.home.throws.move == `match`.adversary.throws.move) { case true => Tie(`match`) }
