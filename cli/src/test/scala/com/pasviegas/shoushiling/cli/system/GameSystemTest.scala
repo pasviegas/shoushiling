@@ -46,11 +46,17 @@ class GameSystemTest extends FlatSpec with MustMatchers {
   }
 
   "Game system" should "respond to SelectHomeMoveToThrow input" in {
-    (GameSystem(new Random).request isDefinedAt SelectHomeMoveToThrow(GameState(), Throw(Move('Rock)))) must be(true)
+    import com.pasviegas.shoushiling.core.DefaultGame
+
+    val game = GameState(game = Some(DefaultGame))
+    (GameSystem(new Random).request isDefinedAt SelectHomeMoveToThrow(game, Throw(Move('Rock)))) must be(true)
   }
 
   "Game system" should "respond to SelectAdversaryMoveToThrow input" in {
-    val moveToThrow: SelectAdversaryMoveToThrow = SelectAdversaryMoveToThrow(GameState(), Throw(Move('Rock)))
+    import com.pasviegas.shoushiling.core.DefaultGame
+
+    val game = GameState(game = Some(DefaultGame))
+    val moveToThrow: SelectAdversaryMoveToThrow = SelectAdversaryMoveToThrow(game, Throw(Move('Rock)))
     (GameSystem(new Random).request isDefinedAt moveToThrow) must be(true)
   }
 

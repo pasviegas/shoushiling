@@ -24,27 +24,36 @@
 // For more information, please refer to <http://unlicense.org/>
 package com.pasviegas.shoushiling.cli.system
 
-import com.pasviegas.shoushiling.cli.system.exceptions.{NoGameModeSelected, UnknownGameModeSelected}
+import com.pasviegas.shoushiling.cli.system.exceptions._
 import com.pasviegas.shoushiling.cli.system.inputs.{GameInput, SelectAdversaryMoveToThrow, SelectHomeMoveToThrow}
 import com.pasviegas.shoushiling.cli.system.messages._
 import com.pasviegas.shoushiling.cli.system.stages.{AdversaryPlayerChooseMoveToThrow, PlayTheGame}
 import com.pasviegas.shoushiling.cli.system.support.ComputerPlayer
 import com.pasviegas.shoushiling.cli.{GameMode, GameState}
-import com.pasviegas.shoushiling.core.GamePlay.Throw
+import com.pasviegas.shoushiling.core.GamePlay.{Move, Throw}
+import com.pasviegas.shoushiling.core.engine.Game
 
 import scala.util.{Failure, Random, Success, Try}
 
 case class SelectPlayerThrowSystem(seed: Random) extends AGameSystem {
 
   def request: PartialFunction[GameInput, Try[GameState]] = {
+    case SelectHomeMoveToThrow(state, Throw(Move(move))) if checkUnknown(move, state.game) =>
+      Failure(UnknownMoveSelected)
+    case SelectAdversaryMoveToThrow(state, Throw(Move(move))) if checkUnknown(move, state.game) =>
+      Failure(UnknownMoveSelected)
     case SelectHomeMoveToThrow(state, thrown) => state.mode match {
       case Some(GameMode('single)) => selectSinglePlayerHome(state, thrown)
       case Some(GameMode('multi)) => selectMultiPlayerHome(state, thrown)
       case Some(_) => Failure(UnknownGameModeSelected)
       case None => Failure(NoGameModeSelected)
     }
-    case SelectAdversaryMoveToThrow(state, thrown) => selectAdversaryMoveToThrow(state, thrown)
+    case SelectAdversaryMoveToThrow(state, thrown) =>
+      selectAdversaryMoveToThrow(state, thrown)
   }
+
+  private def checkUnknown(move: Symbol, game: Option[Game]) =
+    !game.get.rules.exists(_.winner.name == move)
 
   private def selectSinglePlayerHome(state: GameState, thrown: Throw) =
     Success(state.copy(

@@ -32,11 +32,9 @@ import scala.util.Random
 case class ComputerPlayer(seed: Random) {
 
   def throws(game: Game): Throw =
-    Throw(rules(game)(randomMoveIndex(game)).winner)
+    Throw(seed.shuffle(rules(game)).head.winner)
 
   private def rules(game: Game) =
-    game.rules.toArray
+    game.rules
 
-  private def randomMoveIndex(game: Game) =
-    Random.nextInt(game.rules.size)
 }
