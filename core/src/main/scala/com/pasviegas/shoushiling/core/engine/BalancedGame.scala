@@ -75,4 +75,5 @@ object BalancedGame {
       moveCountTuple._2 == (rules.size / setOfMoves.size)
 }
 
-case class GameNotBalancedException() extends Exception
+case class GameNotBalancedException()
+  extends Exception("Game not balanced, impossible to create game from provided rules.")

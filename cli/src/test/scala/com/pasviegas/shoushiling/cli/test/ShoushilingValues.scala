@@ -50,4 +50,5 @@ trait ShoushilingValues {
 
   val correctGame = getClass.getResource("/correct.game").getPath
   val wrongGame = getClass.getResource("/wrong.game").getPath
+  val unbalancedGame = getClass.getResource("/unbalanced.game").getPath
 }

@@ -24,18 +24,17 @@
 // For more information, please refer to <http://unlicense.org/>
 package com.pasviegas.shoushiling.cli
 
-import com.pasviegas.shoushiling.cli.system.GameSystem
+import com.pasviegas.shoushiling.cli.system.messages.ExceptionMessage
 import com.pasviegas.shoushiling.cli.system.stages.ChooseGameMode
 import com.pasviegas.shoushiling.cli.test.ShoushilingValues
+import com.pasviegas.shoushiling.core.engine.GameNotBalancedException
 import org.scalatest.{FlatSpec, MustMatchers}
-
-import scala.util.Random
 
 class GameLoopTest extends FlatSpec with MustMatchers with ShoushilingValues {
 
   "A single player Game" should "loop through its stages until reaching the end" in {
     val gameLoop: Option[GameLoop] = for {
-      started <- GameLoop(GameSystem(new Random), GameState()).next()
+      started <- GameLoop(TestGameSystem, GameState()).next()
       chooseMode <- started.next(Some("single"))
       chooseThrow <- chooseMode.next(Some("Rock"))
       play <- chooseThrow.next()
@@ -47,7 +46,7 @@ class GameLoopTest extends FlatSpec with MustMatchers with ShoushilingValues {
 
   "A multi player Game" should "loop through its stages until reaching the end" in {
     val gameLoop: Option[GameLoop] = for {
-      started <- GameLoop(GameSystem(new Random), GameState()).next()
+      started <- GameLoop(TestGameSystem, GameState()).next()
       chooseMode <- started.next(Some("multi"))
       player1Throw <- chooseMode.next(Some("Rock"))
       player2Throw <- player1Throw.next(Some("Rock"))
@@ -60,7 +59,7 @@ class GameLoopTest extends FlatSpec with MustMatchers with ShoushilingValues {
 
   "The a Game" should "retry if the user tried something wrong" in {
     val retriedLoop: Option[GameLoop] = for {
-      started <- GameLoop(GameSystem(new Random), GameState()).next()
+      started <- GameLoop(TestGameSystem, GameState()).next()
       chooseMMORPGMode <- started.next(Some("MMORPG"))
     } yield chooseMMORPGMode
 
@@ -92,5 +91,12 @@ class GameLoopTest extends FlatSpec with MustMatchers with ShoushilingValues {
     })
 
     inputs must be(Nil)
+  }
+  "A custom unbalanced Game" should "not start" in {
+    val gameLoop: Option[GameLoop] = for {
+      notBalanced <- GameLoop(TestGameSystem, GameState()).next(Some(unbalancedGame))
+    } yield notBalanced
+
+    gameLoop.get.state.message must be(Some(ExceptionMessage(GameNotBalancedException())))
   }
 }

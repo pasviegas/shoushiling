@@ -33,7 +33,7 @@ import com.pasviegas.shoushiling.cli.system.messages.WelcomeMessage
 import com.pasviegas.shoushiling.cli.system.stages.ChooseGameMode
 import com.pasviegas.shoushiling.core.GamePlay.Move
 import com.pasviegas.shoushiling.core._
-import com.pasviegas.shoushiling.core.engine.{GameRule, BalancedGame}
+import com.pasviegas.shoushiling.core.engine.{BalancedGame, GameRule}
 
 import scala.util.{Failure, Success, Try}
 
@@ -63,11 +63,12 @@ case object StartGameSystem extends AGameSystem {
     ))
 
   private def startCustomGame(state: GameState, configFile: String) =
-    Success(state.copy(
-      message = Some(WelcomeMessage),
-      game = Some(gameFromFile(configFile)),
-      nextStage = ChooseGameMode()
-    ))
+    Try(gameFromFile(configFile)).map(game =>
+      state.copy(
+        message = Some(WelcomeMessage),
+        game = Some(game),
+        nextStage = ChooseGameMode()
+      ))
 
   private def gameFromFile(configFile: String) =
     BalancedGame(configToRuleSet(configFile))
