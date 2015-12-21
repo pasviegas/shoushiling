@@ -37,12 +37,13 @@ import scala.util.{Failure, Success, Try}
 case object PlayGameSystem extends AGameSystem {
 
   def request: PartialFunction[GameInput, Try[GameState]] = {
-    case Play(state) => (state.game, state.`match`) match {
-      case (Some(game), Some(players)) => play(state, game, players)
-      case (Some(game), None) => Failure(GameHasNoMatch)
-      case (None, Some(players)) => Failure(GameHasNotBeenConfigured)
-      case (None, None) => Failure(GameHasNotBeenConfigured)
-    }
+    case Play(state) =>
+      (state.game, state.`match`) match {
+        case (Some(game), Some(players)) => play(state, game, players)
+        case (Some(game), None) => Failure(GameHasNoMatch)
+        case (None, Some(players)) => Failure(GameHasNotBeenConfigured)
+        case (None, None) => Failure(GameHasNotBeenConfigured)
+      }
   }
 
   private def play(state: GameState, game: Game, players: Match) = {

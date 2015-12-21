@@ -40,14 +40,18 @@ case class SelectPlayerThrowSystem(seed: Random) extends AGameSystem {
   def request: PartialFunction[GameInput, Try[GameState]] = {
     case SelectHomeMoveToThrow(state, Throw(Move(move))) if checkUnknown(move, state.game) =>
       Failure(UnknownMoveSelected)
+
     case SelectAdversaryMoveToThrow(state, Throw(Move(move))) if checkUnknown(move, state.game) =>
       Failure(UnknownMoveSelected)
-    case SelectHomeMoveToThrow(state, thrown) => state.mode match {
-      case Some(GameMode("single")) => selectSinglePlayerHome(state, thrown)
-      case Some(GameMode("multi")) => selectMultiPlayerHome(state, thrown)
-      case Some(_) => Failure(UnknownGameModeSelected)
-      case None => Failure(NoGameModeSelected)
-    }
+
+    case SelectHomeMoveToThrow(state, thrown) =>
+      state.mode match {
+        case Some(GameMode("single")) => selectSinglePlayerHome(state, thrown)
+        case Some(GameMode("multi")) => selectMultiPlayerHome(state, thrown)
+        case Some(_) => Failure(UnknownGameModeSelected)
+        case None => Failure(NoGameModeSelected)
+      }
+
     case SelectAdversaryMoveToThrow(state, thrown) =>
       selectAdversaryMoveToThrow(state, thrown)
   }

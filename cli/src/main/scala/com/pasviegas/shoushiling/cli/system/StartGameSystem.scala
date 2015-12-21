@@ -49,7 +49,8 @@ case object StartGameSystem extends AGameSystem {
     case StartGame(state, None) => startDefaultGame(state)
   }
 
-  private def notExists(file: String) = !Files.exists(Paths.get(file))
+  private def notExists(file: String) =
+    !Files.exists(Paths.get(file))
 
   private def notParsable(file: String) =
     !unParsedRulesFromFile(file).forall(_.length == 3)
