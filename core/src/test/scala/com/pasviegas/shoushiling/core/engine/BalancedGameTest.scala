@@ -30,7 +30,7 @@ import org.scalatest.{FlatSpec, MustMatchers}
 class BalancedGameTest extends FlatSpec with MustMatchers {
 
   import com.pasviegas.shoushiling.core._
-  import com.pasviegas.shoushiling.test._
+  import com.pasviegas.shoushiling.core.test._
 
   "Any game " should "be played in a match" in {
     BalancedGame().play(Match(Player("1", Throw(Rock)) -> Player("2", Throw(Rock)))).`match` must beAMatch

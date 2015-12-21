@@ -22,10 +22,10 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 //
 // For more information, please refer to <http://unlicense.org/>
-package com.pasviegas.shoushiling
+package com.pasviegas.shoushiling.core
 
-import com.pasviegas.shoushiling.core.GamePlay.{Match, Player}
-import com.pasviegas.shoushiling.core.engine.{GameOutcome, Tie}
+import com.pasviegas.shoushiling.core.GamePlay.{Player, Match}
+import com.pasviegas.shoushiling.core.engine.{Tie, GameOutcome}
 import org.scalatest.matchers.{MatchResult, Matcher}
 
 package object test {
@@ -54,5 +54,4 @@ package object test {
         left + " was not " + player
       )
     }
-
 }

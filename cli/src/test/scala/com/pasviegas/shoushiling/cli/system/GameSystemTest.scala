@@ -24,75 +24,68 @@
 // For more information, please refer to <http://unlicense.org/>
 package com.pasviegas.shoushiling.cli.system
 
+import com.pasviegas.shoushiling.cli.GameState
 import com.pasviegas.shoushiling.cli.system.inputs._
 import com.pasviegas.shoushiling.cli.system.messages.WelcomeMessage
-import com.pasviegas.shoushiling.cli.{GameMode, GameState}
+import com.pasviegas.shoushiling.cli.test.ShoushilingValues
 import com.pasviegas.shoushiling.core.GamePlay.{Player, Throw}
 import org.scalatest.{FlatSpec, MustMatchers}
 
-import scala.util.{Random, Try}
+import scala.util.Try
 
-class GameSystemTest extends FlatSpec with MustMatchers {
+class GameSystemTest extends FlatSpec with MustMatchers with ShoushilingValues {
 
   "Game system" should "respond to StartGame input" in {
-    (GameSystem(new Random).request isDefinedAt StartGame(GameState())) must be(true)
+    (TestGameSystem isDefinedAt StartGame(GameState())) must be(true)
   }
 
   "Game system" should "respond to SinglePlayerMode input" in {
-    (GameSystem(new Random).request isDefinedAt SelectPlayerMode(GameState(), GameMode("single"))) must be(true)
+    (TestGameSystem isDefinedAt SelectPlayerMode(GameState(), SinglePlayer)) must be(true)
   }
 
   "Game system" should "respond to MultiPlayerMode input" in {
-    (GameSystem(new Random).request isDefinedAt SelectPlayerMode(GameState(), GameMode("multi"))) must be(true)
+    (TestGameSystem isDefinedAt SelectPlayerMode(GameState(), MultiPlayer)) must be(true)
   }
 
   "Game system" should "respond to SelectHomeMoveToThrow input" in {
-    import com.pasviegas.shoushiling.core._
+    val game = GameState(game = RockPaperScissors)
 
-    val game = GameState(game = Some(DefaultGame))
-    (GameSystem(new Random).request isDefinedAt SelectHomeMoveToThrow(game, Throw(Rock))) must be(true)
+    (TestGameSystem isDefinedAt SelectHomeMoveToThrow(game, Throw(Rock))) must be(true)
   }
 
   "Game system" should "respond to SelectAdversaryMoveToThrow input" in {
-    import com.pasviegas.shoushiling.core._
-
-    val game = GameState(game = Some(DefaultGame))
+    val game = GameState(game = RockPaperScissors)
     val moveToThrow: SelectAdversaryMoveToThrow = SelectAdversaryMoveToThrow(game, Throw(Rock))
-    (GameSystem(new Random).request isDefinedAt moveToThrow) must be(true)
+
+    (TestGameSystem isDefinedAt moveToThrow) must be(true)
   }
 
   "Game system" should "respond to Play input" in {
-    (GameSystem(new Random).request isDefinedAt Play(GameState())) must be(true)
+    (TestGameSystem isDefinedAt Play(GameState())) must be(true)
   }
 
   "Game system" should "behave as a partial function" in {
-    (GameSystem(new Random) apply StartGame(GameState())).get.message must be(Some(WelcomeMessage))
+    (TestGameSystem apply StartGame(GameState())).get.message must be(Some(WelcomeMessage))
   }
 
   "A player" should "be able to play a full multi player game" in {
-    import com.pasviegas.shoushiling.core._
-
-    val gameSystem: GameSystem = GameSystem(new Random)
     val finalGame: Try[GameState] = for {
-      gameStarted <- gameSystem request StartGame(GameState())
-      modeChosen <- gameSystem request SelectPlayerMode(gameStarted, GameMode("multi"))
-      homeThrowChosen <- gameSystem request SelectHomeMoveToThrow(modeChosen, Throw(Rock))
-      throwsChosen <- gameSystem request SelectAdversaryMoveToThrow(homeThrowChosen, Throw(Scissors))
-      gamePlayed <- gameSystem request Play(throwsChosen)
+      gameStarted <- TestGameSystem request StartGame(GameState())
+      modeChosen <- TestGameSystem request SelectPlayerMode(gameStarted, MultiPlayer)
+      homeThrowChosen <- TestGameSystem request SelectHomeMoveToThrow(modeChosen, Throw(Rock))
+      throwsChosen <- TestGameSystem request SelectAdversaryMoveToThrow(homeThrowChosen, Throw(Scissors))
+      gamePlayed <- TestGameSystem request Play(throwsChosen)
     } yield gamePlayed
 
     finalGame.get.outcome.get.winner.get must be(Player("1", Throw(Rock)))
   }
 
   "A player" should "be able to play a full single player game" in {
-    import com.pasviegas.shoushiling.core._
-
-    val gameSystem: GameSystem = GameSystem(new Random)
     val finalGame: Try[GameState] = for {
-      gameStarted <- gameSystem request StartGame(GameState())
-      modeChosen <- gameSystem request SelectPlayerMode(gameStarted, GameMode("single"))
-      throwsChosen <- gameSystem request SelectHomeMoveToThrow(modeChosen, Throw(Rock))
-      gamePlayed <- gameSystem request Play(throwsChosen)
+      gameStarted <- TestGameSystem request StartGame(GameState())
+      modeChosen <- TestGameSystem request SelectPlayerMode(gameStarted, SinglePlayer)
+      throwsChosen <- TestGameSystem request SelectHomeMoveToThrow(modeChosen, Throw(Rock))
+      gamePlayed <- TestGameSystem request Play(throwsChosen)
     } yield gamePlayed
 
     finalGame.get.outcome mustBe defined

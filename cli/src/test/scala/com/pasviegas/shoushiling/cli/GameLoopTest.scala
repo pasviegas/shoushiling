@@ -26,11 +26,12 @@ package com.pasviegas.shoushiling.cli
 
 import com.pasviegas.shoushiling.cli.system.GameSystem
 import com.pasviegas.shoushiling.cli.system.stages.ChooseGameMode
+import com.pasviegas.shoushiling.cli.test.ShoushilingValues
 import org.scalatest.{FlatSpec, MustMatchers}
 
 import scala.util.Random
 
-class GameLoopTest extends FlatSpec with MustMatchers {
+class GameLoopTest extends FlatSpec with MustMatchers with ShoushilingValues {
 
   "A single player Game" should "loop through its stages until reaching the end" in {
     val gameLoop: Option[GameLoop] = for {
@@ -82,7 +83,7 @@ class GameLoopTest extends FlatSpec with MustMatchers {
   "A custom Game" should "start and go through all stages until reaching the end" in {
     var inputs = List("single", "Lizard")
 
-    val args: Array[String] = Array(getClass.getResource("/correct.game").getPath)
+    val args: Array[String] = Array(correctGame)
     GameLoop.start(args, (lopp) => {}, () => inputs match {
       case head :: tail =>
         inputs = tail

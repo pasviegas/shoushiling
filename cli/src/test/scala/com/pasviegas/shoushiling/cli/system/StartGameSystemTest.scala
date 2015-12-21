@@ -29,17 +29,16 @@ import com.pasviegas.shoushiling.cli.system.exceptions.{ConfigFileNotFound, Conf
 import com.pasviegas.shoushiling.cli.system.inputs.StartGame
 import com.pasviegas.shoushiling.cli.system.messages.WelcomeMessage
 import com.pasviegas.shoushiling.cli.system.stages.ChooseGameMode
+import com.pasviegas.shoushiling.cli.test.ShoushilingValues
 import com.pasviegas.shoushiling.core.GamePlay.Move
 import org.scalatest.{FlatSpec, MustMatchers}
 
 import scala.util.Failure
 
-class StartGameSystemTest extends FlatSpec with MustMatchers {
+class StartGameSystemTest extends FlatSpec with MustMatchers with ShoushilingValues {
 
   "A player" must "be able to start the game with the default rules" in {
-    import com.pasviegas.shoushiling.core._
-
-    (StartGameSystem request StartGame(GameState())).get.game must be(Some(DefaultGame))
+    (StartGameSystem request StartGame(GameState())).get.game must be(RockPaperScissors)
   }
 
   "When the game starts, the player" should "receive a welcome message" in {
@@ -51,8 +50,7 @@ class StartGameSystemTest extends FlatSpec with MustMatchers {
   }
 
   "A player" can "start a custom the game" in {
-    val correct = Some(getClass.getResource("/correct.game").getPath)
-    (StartGameSystem request StartGame(GameState(), correct))
+    (StartGameSystem request StartGame(GameState(), Some(correctGame)))
       .get.game.get.rules.find(_.winner == Move("Lizard")) mustBe defined
   }
 
@@ -61,8 +59,7 @@ class StartGameSystemTest extends FlatSpec with MustMatchers {
   }
 
   "A player" can "not start a game if the config file is incorrectly configured" in {
-    val wrongFile = Some(getClass.getResource("/wrong.game").getPath)
-    (StartGameSystem request StartGame(GameState(), wrongFile)) must be(Failure(ConfigFileNotInCorrectFormat))
+    (StartGameSystem request StartGame(GameState(), Some(wrongGame))) must be(Failure(ConfigFileNotInCorrectFormat))
   }
 }
 

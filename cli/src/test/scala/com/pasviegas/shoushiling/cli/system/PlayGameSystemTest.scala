@@ -29,102 +29,45 @@ import com.pasviegas.shoushiling.cli.system.exceptions.{GameHasNoMatch, GameHasN
 import com.pasviegas.shoushiling.cli.system.inputs.Play
 import com.pasviegas.shoushiling.cli.system.messages.GameOverMessage
 import com.pasviegas.shoushiling.cli.system.stages.GameOver
-import com.pasviegas.shoushiling.core.GamePlay.{Match, Player, Throw}
-import com.pasviegas.shoushiling.core.engine.Tie
+import com.pasviegas.shoushiling.cli.test.ShoushilingValues
 import org.scalatest.{FlatSpec, MustMatchers}
 
 import scala.util.{Failure, Try}
 
-class PlayGameSystemTest extends FlatSpec with MustMatchers {
+class PlayGameSystemTest extends FlatSpec with MustMatchers with ShoushilingValues {
 
   "Players" should "be able to play the game and see the outcome" in {
-    import com.pasviegas.shoushiling.core._
+    val game = GameState(`match` = ATie, game = RockPaperScissors)
 
-    val championshipFinale = Match(
-      Player("1", Throw(Paper)),
-      Player("2", Throw(Paper))
-    )
-
-    val defaultGame = GameState(
-      `match` = Some(championshipFinale),
-      game = Some(DefaultGame)
-    )
-
-    (PlayGameSystem request Play(defaultGame)).get.outcome mustBe defined
+    (PlayGameSystem request Play(game)).get.outcome mustBe defined
   }
 
   "If there is no match set, the game" should "not be played" in {
-    import com.pasviegas.shoushiling.core._
+    val gameWithNoMatch = GameState(game = RockPaperScissors)
 
-    val stateWithNoMatch = GameState(game = Some(DefaultGame))
-
-    (PlayGameSystem request Play(stateWithNoMatch)) must be(Failure(GameHasNoMatch))
+    (PlayGameSystem request Play(gameWithNoMatch)) must be(Failure(GameHasNoMatch))
   }
 
   "If there if no game rules are set, the game" should "not be played" in {
-    import com.pasviegas.shoushiling.core._
+    val gameWithNoRules = GameState(`match` = ATie)
 
-    val championshipFinale = Match(
-      Player("1", Throw(Paper)),
-      Player("2", Throw(Paper))
-    )
-
-    val stateWithNoMatch = GameState(`match` = Some(championshipFinale))
-
-    (PlayGameSystem request Play(stateWithNoMatch)) must be(Failure(GameHasNotBeenConfigured))
+    (PlayGameSystem request Play(gameWithNoRules)) must be(Failure(GameHasNotBeenConfigured))
   }
 
   "If there if no game rules and no match are set, the game" should "not be played" in {
     (PlayGameSystem request Play(GameState())) must be(Failure(GameHasNotBeenConfigured))
   }
 
-  "After the the match is played, the players" should "receive a feedback message" in {
-    import com.pasviegas.shoushiling.core._
-
-    val championshipFinale = Match(
-      Player("1", Throw(Paper)),
-      Player("2", Throw(Paper))
-    )
-
-    val defaultGame = GameState(
-      `match` = Some(championshipFinale),
-      game = Some(DefaultGame)
-    )
-
-    (PlayGameSystem request Play(defaultGame))
-      .get.message must be(Some(GameOverMessage(Some(Tie(championshipFinale)))))
-  }
-
   "After the the match is played, game" should "end" in {
-    import com.pasviegas.shoushiling.core._
+    val game = GameState(`match` = ATie, game = RockPaperScissors)
 
-    val championshipFinale = Match(
-      Player("1", Throw(Paper)),
-      Player("2", Throw(Paper))
-    )
-
-    val defaultGame = GameState(
-      `match` = Some(championshipFinale),
-      game = Some(DefaultGame)
-    )
-
-    (PlayGameSystem request Play(defaultGame)).get.nextStage must be(GameOver())
+    (PlayGameSystem request Play(game)).get.nextStage must be(GameOver())
   }
 
   "After the the match is played, the user" should "receive a feedback message" in {
-    import com.pasviegas.shoushiling.core._
+    val game = GameState(`match` = ATie, game = RockPaperScissors)
+    val gameOverState: Try[GameState] = PlayGameSystem request Play(game)
 
-    val championshipFinale = Match(
-      Player("1", Throw(Paper)),
-      Player("2", Throw(Paper))
-    )
-
-    val defaultGame = GameState(
-      `match` = Some(championshipFinale),
-      game = Some(DefaultGame)
-    )
-
-    val gameOverState: Try[GameState] = PlayGameSystem request Play(defaultGame)
     gameOverState.get.message must be(Some(GameOverMessage(gameOverState.get.outcome)))
   }
 
