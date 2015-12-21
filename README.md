@@ -7,12 +7,18 @@ to the time of the Chinese Han dynasty (206 BC – 220 AD).[6] In the book, the 
 called **shoushiling** (手势令; lit "hand command"). Li Rihua's (李日华) book Note of Liuyanzhai (六砚斋笔记) 
 also mentions this game, calling it shoushiling (手势令), huozhitou (豁指头), or huoquan (豁拳).
 
-## Play!
-
-Run `sh scritps/play.sh` or `wget https://dl.bintray.com/pasviegas/maven/com/pasviegas/shoushiling_2.11/0.2.0/shoushiling_2.11-0.2.0-runnable.jar && java -jar shoushiling_2.11-0.2.0-runnable.jar` 
+You can either:
+- Compile locally running: `sh scripts/play.sh` 
+- Get the deployed version: `wget https://dl.bintray.com/pasviegas/maven/com/pasviegas/shoushiling_2.11/0.2.0/shoushiling_2.11-0.2.0-runnable.jar && java -jar shoushiling_2.11-0.2.0-runnable.jar`  
 
 ## Development
 
 Run `activator ~test`
+
+## Deployment
+
+Just push to github, be aware that you have to bump the version in order to do so.
+
+Don't forget to change scripts/play.sh to the new version before pushing (or be a better person and have a commit hook :P)
 
 

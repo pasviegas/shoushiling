@@ -18,7 +18,7 @@ lazy val cli = (project in file("cli"))
 lazy val parentSettings = buildSettings ++ packageSettings ++ publishSettings
 
 lazy val subProjectSettings =
-  buildSettings ++ baseSettings ++ codeQualitySettings ++ scalariformSettings ++ noPublish
+  buildSettings ++ baseSettings ++ codeQualitySettings ++ noPublish
 
 val projectVersion = "0.2.0"
 
@@ -59,7 +59,7 @@ lazy val codeQualitySettings = Seq(
     .setPreference(AlignSingleLineCaseStatements, true)
     .setPreference(AlignSingleLineCaseStatements.MaxArrowIndent, 100)
     .setPreference(DoubleIndentClassDeclaration, true)
-)
+) ++ scalariformSettings
 
 lazy val compileScalaStyle = taskKey[Unit]("compileScalaStyle")
 

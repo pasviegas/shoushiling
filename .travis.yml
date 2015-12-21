@@ -1,11 +1,13 @@
 language: scala
 scala:
 - 2.11.7
+before_install:
+ - chmod +x ./scripts/publish/setBintrayCredentials.sh
 before_script: ./scripts/publish/setBintrayCredentials.sh
 script:
 - sbt clean coverage test && sbt coverageAggregate
 after_success:
-- sbt assembly publishTo publish && sbt coveralls
+- sbt coveralls && sbt assembly publishTo publish
 env:
   global:
   - secure: APVNUwe/6n1YnIVYfRDnnjxkwdc7VTgCQNzo6jZwQa1b77PF+0DTwA1jWmtfCqpYAAk84neHB72eDKsmrg6YgO1nIaCnl1FBZk80K5HpzUtS5A1p2HcA805jigtQ9rmfZffaeTvfVwxK98RDyxXTl+csJkpnkoreCJ8nAZqSFHIuhfWeu/FtKP+F9at/9S+vYrLPyxiXhpmIzy2fVaKbSNIKNvHKqHnI8aEFBYsiFyZeIWananD4AgbN+UzaKpOARL8jHzYqRv8jW34OLGbSb7mjMcaXvc3fyxAhrq9zuNNhIV9qlGaNrv/xfMdme/MoMa8WuAfhmNH5H4VjA56umOLTANXDUkUqiisUVGyfOHtQIm7cxxCa6hWEnc83Dtkhg/fiECIv/tdKxFujp3p7MBHWHl+zSFMjebkuoDlHSchVktqzHpAaRJJZJneQ0OWLQ6yh2v0UxE3uvwowERc20Ydr95t1Qg9BG2iHiIC2pB3N22f9WGkwnG262XTPFg8BnjJywagYhfbG3Y7xfwUwh+Z21rnhowXyd7Zgr1geX+jNRJcTclgF8jIO0gQVGWMe60EBvPR3G4fAyFMVb/80PW2NG4qxJDDMQkWIlxl4rRBzBF+jYOLPVI0ljTJ4fXubPXcOp8g60dYR1JU28UN1RT5vBe1j9yfUwPmEu6g4tg8=
