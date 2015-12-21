@@ -7,6 +7,10 @@ to the time of the Chinese Han dynasty (206 BC – 220 AD).[6] In the book, the 
 called **shoushiling** (手势令; lit "hand command"). Li Rihua's (李日华) book Note of Liuyanzhai (六砚斋笔记) 
 also mentions this game, calling it shoushiling (手势令), huozhitou (豁指头), or huoquan (豁拳).
 
+## Play!
+
+Run `sh play.sh `
+
 ## Development
 
 Run `activator ~test`

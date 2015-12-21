@@ -4,6 +4,7 @@ lazy val shoushiling = (project in file("."))
   .settings(moduleName := "shoushiling")
   .settings(parentSettings)
   .aggregate(core, cli)
+  .dependsOn(cli)
 
 lazy val core = (project in file("core"))
   .settings(moduleName := "shoushiling-core")
@@ -14,11 +15,10 @@ lazy val cli = (project in file("cli"))
   .settings(subProjectSettings)
   .dependsOn(core)
 
-lazy val parentSettings =
-  buildSettings ++ coverageSettings
+lazy val parentSettings = buildSettings ++ packageSettings
 
 lazy val subProjectSettings =
-  buildSettings ++ baseSettings ++ codeQualitySettings ++ scalariformSettings ++ coverageSettings
+  buildSettings ++ baseSettings ++ codeQualitySettings ++ scalariformSettings
 
 lazy val buildSettings = Seq(
   version := "1.0",
@@ -26,14 +26,16 @@ lazy val buildSettings = Seq(
   scalaVersion := "2.11.7"
 )
 
+lazy val packageSettings = Seq(
+  mainClass in assembly := Some("com.pasviegas.shoushiling.cli.Main"),
+  assemblyJarName in assembly := "shoushiling.jar",
+  test in assembly := {}
+)
+
 lazy val baseSettings = Seq(
   libraryDependencies ++= Seq(
     "org.scalatest" %% "scalatest" % "2.2.5" % "test"
   )
-)
-
-lazy val coverageSettings = Seq(
-  coverageEnabled := true
 )
 
 lazy val codeQualitySettings = Seq(
