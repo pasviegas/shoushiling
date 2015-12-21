@@ -24,14 +24,17 @@
 // For more information, please refer to <http://unlicense.org/>
 package com.pasviegas.shoushiling.cli
 
+import com.pasviegas.shoushiling.cli.system.GameSystem
 import com.pasviegas.shoushiling.cli.system.stages.ChooseGameMode
 import org.scalatest.{FlatSpec, MustMatchers}
 
+import scala.util.Random
+
 class GameLoopTest extends FlatSpec with MustMatchers {
 
-  "The a single player Game" should "loop through its stages until reaching the end" in {
+  "A single player Game" should "loop through its stages until reaching the end" in {
     val gameLoop: Option[GameLoop] = for {
-      started <- GameLoop(GameSystem, GameState()).next()
+      started <- GameLoop(GameSystem(new Random), GameState()).next()
       chooseMode <- started.next(Some("single"))
       chooseThrow <- chooseMode.next(Some("Rock"))
       play <- chooseThrow.next()
@@ -41,9 +44,9 @@ class GameLoopTest extends FlatSpec with MustMatchers {
     gameLoop must be(None)
   }
 
-  "The a multi player Game" should "loop through its stages until reaching the end" in {
+  "A multi player Game" should "loop through its stages until reaching the end" in {
     val gameLoop: Option[GameLoop] = for {
-      started <- GameLoop(GameSystem, GameState()).next()
+      started <- GameLoop(GameSystem(new Random), GameState()).next()
       chooseMode <- started.next(Some("multi"))
       player1Throw <- chooseMode.next(Some("Rock"))
       player2Throw <- player1Throw.next(Some("Rock"))
@@ -56,10 +59,23 @@ class GameLoopTest extends FlatSpec with MustMatchers {
 
   "The a Game" should "retry if the user tried something wrong" in {
     val retriedLoop: Option[GameLoop] = for {
-      started <- GameLoop(GameSystem, GameState()).next()
+      started <- GameLoop(GameSystem(new Random), GameState()).next()
       chooseMMORPGMode <- started.next(Some("MMORPG"))
     } yield chooseMMORPGMode
 
     retriedLoop.get.state.nextStage must be(ChooseGameMode())
+  }
+
+  "A Game" should "start and go through all stages until reaching the end" in {
+    var inputs = List("single", "Rock")
+
+    GameLoop.start((lopp) => {}, () => inputs match {
+      case head :: tail =>
+        inputs = tail
+        Some(head)
+      case Nil => None
+    })
+
+    inputs must be(Nil)
   }
 }

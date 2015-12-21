@@ -39,7 +39,7 @@ class SelectPlayerThrowSystemTest extends FlatSpec with MustMatchers {
   "The home player" must "be able to choose which move to throw" in {
     import com.pasviegas.shoushiling.core.DefaultGame
 
-    val game = GameState(mode = Some(SinglePlayer), game = Some(DefaultGame))
+    val game = GameState(mode = Some(GameMode('single)), game = Some(DefaultGame))
 
     (SelectPlayerThrowSystem(new Random) request SelectHomeMoveToThrow(game, Throw(Move('Rock))))
       .get.`match`.get.home.throws must be(Throw(Move('Rock)))
@@ -48,10 +48,19 @@ class SelectPlayerThrowSystemTest extends FlatSpec with MustMatchers {
   "When the home player selects its throw, he" should "receive a feedback message" in {
     import com.pasviegas.shoushiling.core.DefaultGame
 
-    val game = GameState(mode = Some(SinglePlayer), game = Some(DefaultGame))
+    val game = GameState(mode = Some(GameMode('single)), game = Some(DefaultGame))
 
     (SelectPlayerThrowSystem(new Random) request SelectHomeMoveToThrow(game, Throw(Move('Rock))))
-      .get.message must be(Some(HomePlayerMoveSelectedMessage))
+      .get.message.get.toString must be(SinglePlayerMoveSelectedMessage.toString)
+  }
+
+  "When the game is multi player the home player" should "receive a different feedback message" in {
+    import com.pasviegas.shoushiling.core.DefaultGame
+
+    val game = GameState(mode = Some(GameMode('multi)), game = Some(DefaultGame))
+
+    (SelectPlayerThrowSystem(new Random) request SelectHomeMoveToThrow(game, Throw(Move('Rock))))
+      .get.message.get.toString must be(HomePlayerMoveSelectedMessage(game).toString)
   }
 
   "If there if no game mode set, the game" should "not be played" in {
@@ -63,14 +72,14 @@ class SelectPlayerThrowSystemTest extends FlatSpec with MustMatchers {
   "After the home player chooses its throw and game mode is single player, it" should "play the game" in {
     import com.pasviegas.shoushiling.core.DefaultGame
 
-    val game = GameState(mode = Some(SinglePlayer), game = Some(DefaultGame))
+    val game = GameState(mode = Some(GameMode('single)), game = Some(DefaultGame))
 
     (SelectPlayerThrowSystem(new Random) request SelectHomeMoveToThrow(game, Throw(Move('Rock))))
       .get.nextStage must be(PlayTheGame())
   }
 
   "After the home player chooses its throw and game mode is multi player, it" should "wait for the next player" in {
-    val game = GameState(mode = Some(MultiPlayer))
+    val game = GameState(mode = Some(GameMode('multi)))
 
     (SelectPlayerThrowSystem(new Random) request SelectHomeMoveToThrow(game, Throw(Move('Rock))))
       .get.nextStage must be(AdversaryPlayerChooseMoveToThrow())
@@ -87,7 +96,7 @@ class SelectPlayerThrowSystemTest extends FlatSpec with MustMatchers {
     val game = GameState(preMatch = PreMatch(homeThrow = Some(Throw(Move('Paper)))))
 
     (SelectPlayerThrowSystem(new Random) request SelectAdversaryMoveToThrow(game, Throw(Move('Rock))))
-      .get.message must be(Some(AdversaryPlayerMoveSelectedMessage))
+      .get.message.get.toString must be(AdversaryPlayerMoveSelectedMessage.toString)
   }
 
   "After the adversary player chooses its throw, players " should "play the game" in {

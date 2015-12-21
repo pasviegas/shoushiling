@@ -34,6 +34,11 @@ sealed trait GameOutcome {
 
 final case class Tie(`match`: Match) extends GameOutcome {
   def winner: Option[Player] = None
+
+  override def toString: String = "Tie"
 }
 
-final case class Win(`match`: Match, winner: Some[Player]) extends GameOutcome
+final case class Win(`match`: Match, winner: Some[Player]) extends GameOutcome {
+  override def toString: String =
+    s"Player ${winner.get.name} wins with ${winner.get.throws.move.name.name}"
+}

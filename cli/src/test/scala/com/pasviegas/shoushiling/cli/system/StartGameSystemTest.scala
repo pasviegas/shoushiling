@@ -43,7 +43,8 @@ class StartGameSystemTest extends FlatSpec with MustMatchers {
   }
 
   "When the game starts, the player" should "receive a welcome message" in {
-    (StartGameSystem request StartGame(GameState())).get.message must be(Some(WelcomeMessage))
+    (StartGameSystem request StartGame(GameState()))
+      .get.message.get.toString must be(WelcomeMessage.toString)
   }
 
   "After the game starts, the player" must "choose the game mode" in {

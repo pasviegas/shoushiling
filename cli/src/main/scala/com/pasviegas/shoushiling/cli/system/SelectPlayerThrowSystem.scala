@@ -49,14 +49,17 @@ case class SelectPlayerThrowSystem(seed: Random) extends AGameSystem {
   private def selectSinglePlayerHome(state: GameState, thrown: Throw) =
     Success(state.copy(
       `match` = state.preMatch.copy(homeThrow = Some(thrown), adversaryThrow = Some(randomThrow(state))).asMatch,
-      message = Some(HomePlayerMoveSelectedMessage),
+      message = Some(SinglePlayerMoveSelectedMessage),
       nextStage = PlayTheGame()
     ))
+
+  private def randomThrow(state: GameState): Throw =
+    ComputerPlayer(seed).throws(state.game.get)
 
   private def selectMultiPlayerHome(state: GameState, thrown: Throw) =
     Success(state.copy(
       preMatch = state.preMatch.copy(homeThrow = Some(thrown)),
-      message = Some(HomePlayerMoveSelectedMessage),
+      message = Some(HomePlayerMoveSelectedMessage(state)),
       nextStage = AdversaryPlayerChooseMoveToThrow()
     ))
 
@@ -66,7 +69,4 @@ case class SelectPlayerThrowSystem(seed: Random) extends AGameSystem {
       message = Some(AdversaryPlayerMoveSelectedMessage),
       nextStage = PlayTheGame()
     ))
-
-  private def randomThrow(state: GameState): Throw =
-    ComputerPlayer(seed).throws(state.game.get)
 }

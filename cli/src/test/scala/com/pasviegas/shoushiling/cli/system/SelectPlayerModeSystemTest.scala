@@ -28,7 +28,7 @@ import com.pasviegas.shoushiling.cli.system.exceptions.UnknownGameModeSelected
 import com.pasviegas.shoushiling.cli.system.inputs.SelectPlayerMode
 import com.pasviegas.shoushiling.cli.system.messages.{MultiPlayerSelectedMessage, SinglePlayerSelectedMessage}
 import com.pasviegas.shoushiling.cli.system.stages.HomePlayerChooseMoveToThrow
-import com.pasviegas.shoushiling.cli.{GameMode, GameState, MultiPlayer, SinglePlayer}
+import com.pasviegas.shoushiling.cli.{GameMode, GameState}
 import org.scalatest.{FlatSpec, MustMatchers}
 
 import scala.util.Failure
@@ -36,32 +36,36 @@ import scala.util.Failure
 class SelectPlayerModeSystemTest extends FlatSpec with MustMatchers {
 
   "A player" must "be able to choose to play alone" in {
-    (SelectPlayerModeSystem request SelectPlayerMode(GameState(), SinglePlayer))
-      .get.mode must be(Some(SinglePlayer))
+    (SelectPlayerModeSystem request SelectPlayerMode(GameState(), GameMode('single)))
+      .get.mode must be(Some(GameMode('single)))
   }
 
   "When the player selects single player, he" should "receive a feedback message" in {
-    (SelectPlayerModeSystem request SelectPlayerMode(GameState(), SinglePlayer))
-      .get.message must be(Some(SinglePlayerSelectedMessage))
+    import com.pasviegas.shoushiling.core._
+    val state = GameState(game = Some(DefaultGame))
+    (SelectPlayerModeSystem request SelectPlayerMode(state, GameMode('single)))
+      .get.message.get.toString must be(SinglePlayerSelectedMessage(state).toString)
   }
 
   "After the player chooses single player" must "choose its move" in {
-    (SelectPlayerModeSystem request SelectPlayerMode(GameState(), SinglePlayer))
+    (SelectPlayerModeSystem request SelectPlayerMode(GameState(), GameMode('single)))
       .get.nextStage must be(HomePlayerChooseMoveToThrow())
   }
 
   "A player" must "be able to choose to play with another player" in {
-    (SelectPlayerModeSystem request SelectPlayerMode(GameState(), MultiPlayer))
-      .get.mode must be(Some(MultiPlayer))
+    (SelectPlayerModeSystem request SelectPlayerMode(GameState(), GameMode('multi)))
+      .get.mode must be(Some(GameMode('multi)))
   }
 
   "When the player selects multi player, he" should "receive a feedback message" in {
-    (SelectPlayerModeSystem request SelectPlayerMode(GameState(), MultiPlayer))
-      .get.message must be(Some(MultiPlayerSelectedMessage))
+    import com.pasviegas.shoushiling.core._
+    val state = GameState(game = Some(DefaultGame))
+    (SelectPlayerModeSystem request SelectPlayerMode(state, GameMode('multi)))
+      .get.message.get.toString must be(MultiPlayerSelectedMessage(state).toString)
   }
 
   "After the player chooses multi player" must "choose its move" in {
-    (SelectPlayerModeSystem request SelectPlayerMode(GameState(), MultiPlayer))
+    (SelectPlayerModeSystem request SelectPlayerMode(GameState(), GameMode('multi)))
       .get.nextStage must be(HomePlayerChooseMoveToThrow())
   }
 

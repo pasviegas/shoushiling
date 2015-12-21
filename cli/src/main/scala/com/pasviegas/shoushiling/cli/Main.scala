@@ -22,15 +22,12 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 //
 // For more information, please refer to <http://unlicense.org/>
-package com.pasviegas.shoushiling
+package com.pasviegas.shoushiling.cli
 
-import scala.util.Random
+import scala.io.StdIn
 
-package object cli {
+object Main extends App {
 
-  val GameSystem = system.GameSystem(new Random)
+  GameLoop.start(_.state.message.foreach(println), () => Some(StdIn.readLine()))
 
-  val SinglePlayer = GameMode(name = 'single)
-
-  val MultiPlayer = GameMode(name = 'multi)
 }

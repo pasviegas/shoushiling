@@ -25,52 +25,53 @@
 package com.pasviegas.shoushiling.cli.system
 
 import com.pasviegas.shoushiling.cli.system.inputs._
+import com.pasviegas.shoushiling.cli.{GameMode, GameState}
 import com.pasviegas.shoushiling.core.GamePlay.{Move, Player, Throw}
 import org.scalatest.{FlatSpec, MustMatchers}
 
-import scala.util.Try
+import scala.util.{Random, Try}
 
 class GameSystemTest extends FlatSpec with MustMatchers {
 
-  import com.pasviegas.shoushiling.cli._
-
   "Game system" should "respond to StartGame input" in {
-    (GameSystem.request isDefinedAt StartGame(GameState())) must be(true)
+    (GameSystem(new Random).request isDefinedAt StartGame(GameState())) must be(true)
   }
 
   "Game system" should "respond to SinglePlayerMode input" in {
-    (GameSystem.request isDefinedAt SelectPlayerMode(GameState(), SinglePlayer)) must be(true)
+    (GameSystem(new Random).request isDefinedAt SelectPlayerMode(GameState(), GameMode('single))) must be(true)
   }
 
   "Game system" should "respond to MultiPlayerMode input" in {
-    (GameSystem.request isDefinedAt SelectPlayerMode(GameState(), MultiPlayer)) must be(true)
+    (GameSystem(new Random).request isDefinedAt SelectPlayerMode(GameState(), GameMode('multi))) must be(true)
   }
 
   "Game system" should "respond to SelectHomeMoveToThrow input" in {
-    (GameSystem.request isDefinedAt SelectHomeMoveToThrow(GameState(), Throw(Move('Rock)))) must be(true)
+    (GameSystem(new Random).request isDefinedAt SelectHomeMoveToThrow(GameState(), Throw(Move('Rock)))) must be(true)
   }
 
   "Game system" should "respond to SelectAdversaryMoveToThrow input" in {
-    (GameSystem.request isDefinedAt SelectAdversaryMoveToThrow(GameState(), Throw(Move('Rock)))) must be(true)
+    val moveToThrow: SelectAdversaryMoveToThrow = SelectAdversaryMoveToThrow(GameState(), Throw(Move('Rock)))
+    (GameSystem(new Random).request isDefinedAt moveToThrow) must be(true)
   }
 
   "Game system" should "respond to Play input" in {
-    (GameSystem.request isDefinedAt Play(GameState())) must be(true)
+    (GameSystem(new Random).request isDefinedAt Play(GameState())) must be(true)
   }
 
   "Game system" should "behave as a partial function" in {
-    (GameSystem apply StartGame(GameState())).get.started must be(true)
+    (GameSystem(new Random) apply StartGame(GameState())).get.started must be(true)
   }
 
   "A player" should "be able to play a full multi player game" in {
     import com.pasviegas.shoushiling.core._
 
+    val gameSystem: GameSystem = GameSystem(new Random)
     val finalGame: Try[GameState] = for {
-      gameStarted <- GameSystem request StartGame(GameState())
-      modeChosen <- GameSystem request SelectPlayerMode(gameStarted, MultiPlayer)
-      homeThrowChosen <- GameSystem request SelectHomeMoveToThrow(modeChosen, Throw(Rock))
-      throwsChosen <- GameSystem request SelectAdversaryMoveToThrow(homeThrowChosen, Throw(Scissors))
-      gamePlayed <- GameSystem request Play(throwsChosen)
+      gameStarted <- gameSystem request StartGame(GameState())
+      modeChosen <- gameSystem request SelectPlayerMode(gameStarted, GameMode('multi))
+      homeThrowChosen <- gameSystem request SelectHomeMoveToThrow(modeChosen, Throw(Rock))
+      throwsChosen <- gameSystem request SelectAdversaryMoveToThrow(homeThrowChosen, Throw(Scissors))
+      gamePlayed <- gameSystem request Play(throwsChosen)
     } yield gamePlayed
 
     finalGame.get.outcome.get.winner.get must be(Player("1", Throw(Rock)))
@@ -79,11 +80,12 @@ class GameSystemTest extends FlatSpec with MustMatchers {
   "A player" should "be able to play a full single player game" in {
     import com.pasviegas.shoushiling.core._
 
+    val gameSystem: GameSystem = GameSystem(new Random)
     val finalGame: Try[GameState] = for {
-      gameStarted <- GameSystem request StartGame(GameState())
-      modeChosen <- GameSystem request SelectPlayerMode(gameStarted, SinglePlayer)
-      throwsChosen <- GameSystem request SelectHomeMoveToThrow(modeChosen, Throw(Rock))
-      gamePlayed <- GameSystem request Play(throwsChosen)
+      gameStarted <- gameSystem request StartGame(GameState())
+      modeChosen <- gameSystem request SelectPlayerMode(gameStarted, GameMode('single))
+      throwsChosen <- gameSystem request SelectHomeMoveToThrow(modeChosen, Throw(Rock))
+      gamePlayed <- gameSystem request Play(throwsChosen)
     } yield gamePlayed
 
     finalGame.get.outcome mustBe defined

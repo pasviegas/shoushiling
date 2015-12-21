@@ -28,7 +28,7 @@ import com.pasviegas.shoushiling.cli.system.exceptions.UnknownGameModeSelected
 import com.pasviegas.shoushiling.cli.system.inputs.{GameInput, SelectPlayerMode}
 import com.pasviegas.shoushiling.cli.system.messages.{MultiPlayerSelectedMessage, SinglePlayerSelectedMessage}
 import com.pasviegas.shoushiling.cli.system.stages.HomePlayerChooseMoveToThrow
-import com.pasviegas.shoushiling.cli.{GameMode, GameState, MultiPlayer, SinglePlayer}
+import com.pasviegas.shoushiling.cli.{GameMode, GameState}
 
 import scala.util.{Failure, Success, Try}
 
@@ -42,15 +42,15 @@ case object SelectPlayerModeSystem extends AGameSystem {
 
   private def selectSinglePlayer(state: GameState) =
     Success(state.copy(
-      mode = Some(SinglePlayer),
-      message = Some(SinglePlayerSelectedMessage),
+      mode = Some(GameMode('single)),
+      message = Some(SinglePlayerSelectedMessage(state)),
       nextStage = HomePlayerChooseMoveToThrow()
     ))
 
   private def selectMultiPlayer(state: GameState) =
     Success(state.copy(
-      mode = Some(MultiPlayer),
-      message = Some(MultiPlayerSelectedMessage),
+      mode = Some(GameMode('multi)),
+      message = Some(MultiPlayerSelectedMessage(state)),
       nextStage = HomePlayerChooseMoveToThrow()
     ))
 }

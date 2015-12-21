@@ -30,6 +30,7 @@ import com.pasviegas.shoushiling.cli.system.inputs.Play
 import com.pasviegas.shoushiling.cli.system.messages.GameOverMessage
 import com.pasviegas.shoushiling.cli.system.stages.GameOver
 import com.pasviegas.shoushiling.core.GamePlay.{Match, Move, Player, Throw}
+import com.pasviegas.shoushiling.core.engine.Tie
 import org.scalatest.{FlatSpec, MustMatchers}
 
 import scala.util.Failure
@@ -89,7 +90,8 @@ class PlayGameSystemTest extends FlatSpec with MustMatchers {
       game = Some(DefaultGame)
     )
 
-    (PlayGameSystem request Play(defaultGame)).get.message must be(Some(GameOverMessage))
+    (PlayGameSystem request Play(defaultGame))
+      .get.message must be(Some(GameOverMessage(Some(Tie(championshipFinale)))))
   }
 
   "After the the match is played, game" should "end" in {
@@ -106,6 +108,23 @@ class PlayGameSystemTest extends FlatSpec with MustMatchers {
     )
 
     (PlayGameSystem request Play(defaultGame)).get.nextStage must be(GameOver())
+  }
+
+  "After the the match is played, the user" should "receive a feedback message" in {
+    import com.pasviegas.shoushiling.core._
+
+    val championshipFinale = Match(
+      Player("1", Throw(Move('Paper))),
+      Player("2", Throw(Move('Paper)))
+    )
+
+    val defaultGame = GameState(
+      `match` = Some(championshipFinale),
+      game = Some(DefaultGame)
+    )
+
+    val gameOverState = PlayGameSystem request Play(defaultGame)
+    gameOverState.get.message.get.toString must be(GameOverMessage(gameOverState.get.outcome).toString)
   }
 
 }

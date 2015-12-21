@@ -22,29 +22,35 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 //
 // For more information, please refer to <http://unlicense.org/>
-package com.pasviegas.shoushiling.cli
+package com.pasviegas.shoushiling.core.engine
 
-import com.pasviegas.shoushiling.cli.system.messages.Message
-import com.pasviegas.shoushiling.cli.system.stages.{GameStarted, Stage}
 import com.pasviegas.shoushiling.core.GamePlay.{Match, Player, Throw}
-import com.pasviegas.shoushiling.core.engine.{Game, GameOutcome}
+import org.scalatest.{FlatSpec, MustMatchers}
 
-case class GameMode(name: Symbol)
+class GameOutcomeTest extends FlatSpec with MustMatchers {
 
-case class PreMatch(homeThrow: Option[Throw] = None, adversaryThrow: Option[Throw] = None) {
-  def asMatch: Option[Match] = for {
-    player1Throw <- homeThrow
-    player2Throw <- adversaryThrow
-  } yield Match(Player("1", player1Throw), Player("2", player2Throw))
+  import com.pasviegas.shoushiling.core._
+
+  "Game Rule: Rock crushes Scissors" must "have Rock as winner and Scissors as loser" in {
+    Win(Match(Player("1", Throw(Rock)) -> Player("2", Throw(Scissors))), Some(Player("1", Throw(Rock))))
+      .toString must be("Player 1 wins with Rock")
+  }
+
+  "Game Rule: Scissors cuts Paper" must "have Scissors as winner and Paper as loser" in {
+    GameRule(Scissors -> "cuts" -> Paper) match {
+      case GameRule(winner, _, loser) =>
+        winner must be(Scissors)
+        loser must be(Paper)
+    }
+  }
+
+  "Game Rule: Paper covers Scissors" must "have Paper as winner and Scissors as loser" in {
+    GameRule(Paper -> "cuts" -> Scissors) match {
+      case GameRule(winner, _, loser) =>
+        winner must be(Paper)
+        loser must be(Scissors)
+    }
+  }
+
 }
 
-case class GameState(
-  started: Boolean = false,
-  mode: Option[GameMode] = None,
-  preMatch: PreMatch = PreMatch(),
-  `match`: Option[Match] = None,
-  message: Option[Message] = None,
-  game: Option[Game] = None,
-  outcome: Option[GameOutcome] = None,
-  nextStage: Stage = GameStarted()
-)

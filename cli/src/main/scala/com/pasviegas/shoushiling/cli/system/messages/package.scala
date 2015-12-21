@@ -24,20 +24,49 @@
 // For more information, please refer to <http://unlicense.org/>
 package com.pasviegas.shoushiling.cli.system
 
+import com.pasviegas.shoushiling.cli.GameState
+import com.pasviegas.shoushiling.core.engine.GameOutcome
+
 package object messages {
+
+  private def moves(state: GameState) =
+    state.game.get.rules.map(_.winner.name.name).mkString(", ")
 
   trait Message
 
-  case object WelcomeMessage extends Message
+  case class SinglePlayerSelectedMessage(state: GameState) extends Message {
+    override def toString: String =
+      s"You have selected single player, what will be your move? (${moves(state)})"
+  }
 
-  case object SinglePlayerSelectedMessage extends Message
+  case class MultiPlayerSelectedMessage(state: GameState) extends Message {
+    override def toString: String =
+      s"You have selected multi player, what will be the first player's move? (${moves(state)})"
+  }
 
-  case object MultiPlayerSelectedMessage extends Message
+  case class HomePlayerMoveSelectedMessage(state: GameState) extends Message {
+    override def toString: String =
+      s"What will be the adversary's move? (${moves(state)})"
+  }
 
-  case object HomePlayerMoveSelectedMessage extends Message
+  case class GameOverMessage(outcome: Option[GameOutcome]) extends Message {
+    override def toString: String =
+      s"${outcome.get}! Good game! Press enter to exit!"
+  }
 
-  case object AdversaryPlayerMoveSelectedMessage extends Message
+  case object WelcomeMessage extends Message {
+    override def toString: String =
+      "Welcome to Shoushiling, please type the game mode: (Single, Multi)"
+  }
 
-  case object GameOverMessage extends Message
+  case object SinglePlayerMoveSelectedMessage extends Message {
+    override def toString: String =
+      "Good choice! Press enter to see the match result!"
+  }
+
+  case object AdversaryPlayerMoveSelectedMessage extends Message {
+    override def toString: String =
+      "Good choice! Press enter to see the match result!"
+  }
 
 }

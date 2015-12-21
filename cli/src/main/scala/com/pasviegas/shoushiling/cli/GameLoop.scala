@@ -26,7 +26,8 @@ package com.pasviegas.shoushiling.cli
 
 import com.pasviegas.shoushiling.cli.system.GameSystem
 
-import scala.util.{Failure, Success}
+import scala.util.control.Breaks._
+import scala.util.{Failure, Random, Success}
 
 case class GameLoop(system: GameSystem, state: GameState) {
 
@@ -35,4 +36,23 @@ case class GameLoop(system: GameSystem, state: GameState) {
       case Success(nextState) => Some(GameLoop(system, nextState))
       case Failure(exception) => Some(GameLoop(system, state))
     }.orElse(None)
+}
+
+object GameLoop {
+
+  def start(printState: (GameLoop) => Unit, readInput: () => Option[String]): Unit =
+    iterate(gameStart, printState, readInput)
+
+  private def gameStart: Option[GameLoop] =
+    GameLoop(GameSystem(new Random), GameState()).next()
+
+  private def iterate(gameStart: Option[GameLoop], printState: (GameLoop) => Unit, readInput: () => Option[String]) =
+    breakable {
+      Stream.iterate(gameStart)(_.flatMap(_.next(readInput()))).foreach {
+        case Some(game) =>
+          printState(game)
+          game
+        case None => break()
+      }
+    }
 }
