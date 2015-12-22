@@ -64,8 +64,14 @@ object BalancedGame {
       .forall(moveCountShouldBeBalancedWith(rules, uniqueMoves(rules, moveFrom)))
 
   private def countMoves(moveFrom: (GameRule) => Move) =
-    (moveCountMap: Map[Move, Int], rule: GameRule) =>
-      moveCountMap + (moveFrom(rule) -> (moveCountMap.getOrElse(moveFrom(rule), 0) + 1))
+    (totalCount: Map[Move, Int], rule: GameRule) =>
+      countMove(totalCount, rule, moveFrom(rule))
+
+  private def countMove(totalCount: Map[Move, Int], rule: GameRule, move: Move) =
+    totalCount + (move -> increase(totalCount.get(move), rule))
+
+  private def increase(count: Option[Int], rule: GameRule) =
+    count.map(_ + 1).getOrElse(1)
 
   private def uniqueMoves(rules: Set[GameRule], moveFrom: (GameRule) => Move) =
     rules.foldLeft(Set[Move]())((moves, rule) => moves + moveFrom(rule))

@@ -30,7 +30,7 @@ import com.pasviegas.shoushiling.cli.system.inputs.{GameInput, Play}
 import com.pasviegas.shoushiling.cli.system.messages.GameOverMessage
 import com.pasviegas.shoushiling.cli.system.stages.GameOver
 import com.pasviegas.shoushiling.core.GamePlay.Match
-import com.pasviegas.shoushiling.core.engine.{Game, GameOutcome}
+import com.pasviegas.shoushiling.core.engine.Game
 
 import scala.util.{Failure, Success, Try}
 
@@ -47,7 +47,7 @@ case object PlayGameSystem extends AGameSystem {
   }
 
   private def play(state: GameState, game: Game, players: Match) = {
-    val outcome: Some[GameOutcome] = Some(game.play(players))
+    val outcome = Some(game.play(players))
     Success(state.copy(
       outcome = outcome,
       message = Some(GameOverMessage(outcome)),
