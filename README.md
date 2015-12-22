@@ -14,7 +14,9 @@ You'll need at least Java SDK 7 to run.
 ## Play!
 
 You can either:
-- Compile locally running: `sh scripts/play.sh` 
+
+- Compile locally running: `sh scripts/play.sh` (or `sh scripts/play.sh rpsls.game` for a custom game) 
+
 - Get the deployed version: `wget https://dl.bintray.com/pasviegas/maven/com/pasviegas/shoushiling_2.11/0.2.0/shoushiling_2.11-0.2.0-runnable.jar && java -jar shoushiling_2.11-0.2.0-runnable.jar`  
 
 ## Development
@@ -57,7 +59,7 @@ the User and the GameSystem transforms the GameState until it reaches a conclusi
 ### BalancedGame
 
 A BalancedGame is described as:
- - A game of two players;
+ - A two players match;
  - As long as the number of moves is an odd number and that each move defeats exactly half of the other moves 
 while being defeated by the other half, any combination of moves will function as a game.
 
