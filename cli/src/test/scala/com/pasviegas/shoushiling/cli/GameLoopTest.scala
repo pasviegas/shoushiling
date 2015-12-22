@@ -92,6 +92,7 @@ class GameLoopTest extends FlatSpec with MustMatchers with ShoushilingValues {
 
     inputs must be(Nil)
   }
+
   "A custom unbalanced Game" should "not start" in {
     val gameLoop: Option[GameLoop] = for {
       notBalanced <- GameLoop(TestGameSystem, GameState()).next(Some(unbalancedGame))

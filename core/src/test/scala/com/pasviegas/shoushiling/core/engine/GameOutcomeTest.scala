@@ -36,21 +36,5 @@ class GameOutcomeTest extends FlatSpec with MustMatchers {
       .toString must be("Player 1 wins with Rock")
   }
 
-  "Game Rule: Scissors cuts Paper" must "have Scissors as winner and Paper as loser" in {
-    GameRule(Scissors -> "cuts" -> Paper) match {
-      case GameRule(winner, _, loser) =>
-        winner must be(Scissors)
-        loser must be(Paper)
-    }
-  }
-
-  "Game Rule: Paper covers Scissors" must "have Paper as winner and Scissors as loser" in {
-    GameRule(Paper -> "cuts" -> Scissors) match {
-      case GameRule(winner, _, loser) =>
-        winner must be(Paper)
-        loser must be(Scissors)
-    }
-  }
-
 }
 
